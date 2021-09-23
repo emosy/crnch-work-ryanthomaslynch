@@ -28,10 +28,11 @@
 #include <iostream>
 
 #include <memory>
-// #include <deque>
+#include <deque>
 // #include <map>
 #include <vector>
 #include <bits/stdc++.h>
+//TODO: replace bits/stdc++ with something that actually works for other compilers?
 // #include <bit>
 #include <functional>
 // #include <pair>
@@ -63,7 +64,8 @@ vector<bitvec> phase_table;
 
 //phase trace?? should it be deque/stack or vector/arraylist?
 
-vector<phase_t> phase_trace;
+// vector<phase_t> phase_trace;
+deque<phase_t> phase_trace;
 
 
 double difference_measure_of_signatures(bitvec sig1, bitvec sig2) {
