@@ -135,5 +135,6 @@ void init_phase_detector() {
     instruction_count = 0;
     stable_count = 0;
     phase = -1;
+    phase_table.clear();
     phase_trace.clear();
 }
