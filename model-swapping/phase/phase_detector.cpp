@@ -83,6 +83,7 @@ void phase_detector(uint64_t instruction_pointer) {
                 phase_table.push_back(current_signature);
                 phase = phase_table.size() - 1; // or indexof curr_sig?
                 cout << phase << endl;
+                // printf("")
                 //line 194 in the python
             }
         } else { //line 196 in python

@@ -53,6 +53,8 @@ using namespace std;
 #define signature_len 1024
 #define log2_signature_len 10
 #define drop_bits 3
+#define DEBUG 0
+
 
 using bitvec = bitset<signature_len>;
 

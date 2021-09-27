@@ -30,12 +30,50 @@ using namespace std;
 
 
 
+void read_file(char const log_file[]) {
+    FILE* in_file = fopen(log_file, "r");
+    // int is_write, matched;
+
+    int *is_write = (int *) malloc(sizeof(int));
+    uint64_t *addr_ip = (uint64_t *) malloc(sizeof(uint64_t)), *addr2 = (uint64_t *) malloc(sizeof(uint64_t));
+
+    while (!feof(in_file)) {
+        int matched = fscanf(in_file, "%d %lu %lu", is_write, addr_ip, addr2);
+        if (matched < 3) {
+            printf("uh oh! only matched %d \n", matched);
+        }
+        // cout << addr_ip << endl;
+        if (DEBUG) {
+            printf("%lu \n", *addr_ip);
+        }
+        phase_detector(*addr_ip);
+    }
+
+    free(is_write);
+    free(addr_ip);
+    free(addr2);
+
+    // fstream in_file(log_file, ios_base::in);
+
+    
+
+    // while (!in_file.eof()) {
+    //     in_file >> is_write;
+    //     in_file >> addr_ip;
+    //     in_file >> addr2;
+
+    //     cout << addr_ip << endl;
+
+    //     // bitvec inst_pointer_bitvec(addr_ip);
+    //     phase_detector(addr_ip);
+    // }
+}
 
 
 int main(int argc, char const *argv[])
 {
     init_phase_detector();
-    if (argc < 2) {
+    if (argc > 1) {
         // string log_file(argv[2]);
         read_file(argv[2]);
     } else {
@@ -44,29 +82,4 @@ int main(int argc, char const *argv[])
     }
     // cout << log_file << endl;
     return 0;
-}
-
-
-void read_file(char const log_file[]) {
-    // FILE* in_file = fopen(log_file, "r");
-    // int is_write, matched;
-
-
-    // while (!feof(in_file)) {
-    //     matched = fscanf(in_file, "%d ")
-    // }
-
-    fstream in_file(log_file, ios_base::in);
-
-    int is_write;
-    uint64_t addr_ip, addr2;
-
-    while (!in_file.eof()) {
-        in_file >> is_write;
-        in_file >> addr_ip;
-        in_file >> addr2;
-
-        // bitvec inst_pointer_bitvec(addr_ip);
-        phase_detector(addr_ip);
-    }
 }
