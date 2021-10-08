@@ -43,14 +43,16 @@ double phase_detector::difference_measure_of_signatures(bitvec sig1, bitvec sig2
 
 uint64_t phase_detector::hash_address(bitvec sig) {
     auto signature_minus_bottom_drop_bits = sig >> drop_bits;
+    //drop the bottom {drop_bits} bits of the signature
+    //hash it then return the top bits of the hash (the number of bits determined by the length of the signature)
+    //use this to then index into a bitvec that represents the current signature to set a specific bit to 1
     return hash_bitvec(signature_minus_bottom_drop_bits) >> (64 - log2_signature_len);
-    //i don't entirely understand why im doing the right shift by only 54 bits... like why 64 - 10?
 }
 
 void phase_detector::detect(uint64_t instruction_pointer) {
     auto ip = instruction_pointer;
     current_signature[hash_address(ip)] = 1;
-    instruction_count += 1; // should this be before or after the if?
+    
 
     if (instruction_count % interval_len == 0) {
         // we are on a boundary! determine phase and notify listeners
@@ -109,6 +111,7 @@ void phase_detector::detect(uint64_t instruction_pointer) {
         //TODO: add addr info to phase, dwarf map?
 
     }
+    instruction_count += 1; // should this be before or after the if?
 }
 
 void phase_detector::init_phase_detector() {
