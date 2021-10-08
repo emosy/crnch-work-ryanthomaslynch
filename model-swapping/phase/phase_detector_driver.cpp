@@ -28,6 +28,8 @@
 
 using namespace std;
 
+static phase_detector detector;
+
 
 
 void read_file(char const log_file[]) {
@@ -38,8 +40,7 @@ void read_file(char const log_file[]) {
     char *is_write = (char *) malloc(sizeof(char));
     uint64_t *addr_ip = (uint64_t *) malloc(sizeof(uint64_t)), *addr2 = (uint64_t *) malloc(sizeof(uint64_t)), *data_size = (uint64_t *) malloc(sizeof(uint64_t));
 
-    phase_detector detector;
-    detector.init_phase_detector(); //probably not needed
+    
 
 
     while (!feof(in_file)) {
@@ -60,7 +61,7 @@ void read_file(char const log_file[]) {
         detector.detect(*addr_ip);
     }
 
-    detector.cleanup_phase_detector();
+    // detector.cleanup_phase_detector();
 
     free(is_write);
     free(addr_ip);
@@ -86,6 +87,8 @@ void read_file(char const log_file[]) {
 
 int main(int argc, char const *argv[])
 {
+    // phase_detector detector;
+    detector.init_phase_detector(); //probably not needed
     if (argc > 1) {
         // string log_file(argv[2]);
         read_file(argv[2]);
@@ -93,7 +96,10 @@ int main(int argc, char const *argv[])
         // string log_file = "stream.ssv";
         // read_file("stream.ssv");
         read_file("meabo.small.txt");
-
+        detector.cleanup_phase_detector(); //probably not needed
+        detector.small_or_medium = 1;
+        read_file("meabo.medium.txt");
+        detector.cleanup_phase_detector(); //probably not needed
     }
     // cout << log_file << endl;
     return 0;

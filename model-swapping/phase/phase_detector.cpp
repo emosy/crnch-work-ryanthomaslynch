@@ -62,7 +62,7 @@ void phase_detector::detect(uint64_t instruction_pointer) {
                 //add the current signature to the phase table and make the phase # to its index
                 phase_table.push_back(current_signature);
                 phase = phase_table.size() - 1; // or indexof curr_sig?
-                cout << phase << endl;
+                // cout << phase << endl;
                 // printf("")
                 //line 194 in the python
             }
@@ -123,15 +123,25 @@ void phase_detector::cleanup_phase_detector() {
 
     
     if (DEBUG) {
-        ofstream log("phase_trace.txt");
-        
-        for (auto p : phase_trace) {
-            cout << p << endl;
-            if (log.is_open()) {
-                log << p << endl;
+        if (small_or_medium == 0) {
+            ofstream log("phase_trace_small.txt");
+            for (auto p : phase_trace) {
+                // cout << p << endl;
+                if (log.is_open()) {
+                    log << p << endl;
+                }
             }
+            log.close();
+        } else {
+            ofstream log("phase_trace_medium.txt");
+            for (auto p : phase_trace) {
+                // cout << p << endl;
+                if (log.is_open()) {
+                    log << p << endl;
+                }
+            }
+            log.close();
         }
-        log.close();
     }
 
     init_phase_detector();

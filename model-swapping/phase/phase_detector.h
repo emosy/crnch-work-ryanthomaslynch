@@ -94,4 +94,5 @@ class phase_detector {
         void init_phase_detector();
         void cleanup_phase_detector();
         // void register_listeners();
+        int small_or_medium = 0;
 };
