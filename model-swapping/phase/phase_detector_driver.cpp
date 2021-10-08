@@ -34,12 +34,21 @@ void read_file(char const log_file[]) {
     FILE* in_file = fopen(log_file, "r");
     // int is_write, matched;
 
-    int *is_write = (int *) malloc(sizeof(int));
-    uint64_t *addr_ip = (uint64_t *) malloc(sizeof(uint64_t)), *addr2 = (uint64_t *) malloc(sizeof(uint64_t));
+    // int *is_write = (int *) malloc(sizeof(int));
+    char *is_write = (char *) malloc(sizeof(char));
+    uint64_t *addr_ip = (uint64_t *) malloc(sizeof(uint64_t)), *addr2 = (uint64_t *) malloc(sizeof(uint64_t)), *data_size = (uint64_t *) malloc(sizeof(uint64_t));
+
+
 
     while (!feof(in_file)) {
-        int matched = fscanf(in_file, "%d %lu %lu", is_write, addr_ip, addr2);
+        // if 
+        // int matched = fscanf(in_file, "%d %lu %lu", is_write, addr_ip, addr2);
+        //use for old file format of unsigned ints
+        // char address[14]
+        int matched = fscanf(in_file, "%lx,%c,%lu,%lx", addr_ip, is_write, data_size, addr2);
+        //use for file format of hex addr, r/w, data size, data addr
         if (matched < 3) {
+            // 4 if new format, 3 if old format
             printf("uh oh! only matched %d \n", matched);
         }
         // cout << addr_ip << endl;
@@ -52,6 +61,7 @@ void read_file(char const log_file[]) {
     free(is_write);
     free(addr_ip);
     free(addr2);
+    free(data_size);
 
     // fstream in_file(log_file, ios_base::in);
 
@@ -78,7 +88,9 @@ int main(int argc, char const *argv[])
         read_file(argv[2]);
     } else {
         // string log_file = "stream.ssv";
-        read_file("stream.ssv");
+        // read_file("stream.ssv");
+        read_file("meabo.small.txt");
+
     }
     // cout << log_file << endl;
     return 0;

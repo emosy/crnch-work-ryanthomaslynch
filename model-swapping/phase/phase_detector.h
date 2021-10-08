@@ -49,7 +49,7 @@ using namespace std;
 // int drop_bits = 3;
 
 #define threshold 0.5
-#define interval_len 10
+#define interval_len 10000
 #define signature_len 1024
 #define log2_signature_len 10
 #define drop_bits 3
