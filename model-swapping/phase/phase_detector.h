@@ -22,7 +22,7 @@
 
 
 // Phase detection header file
-// Version 0.2
+// Version 0.3
 
 
 #include <cstdio>
@@ -58,7 +58,9 @@ using namespace std;
 
 using bitvec = bitset<signature_len>;
 
-typedef int phase_t;
+typedef int phase_id_type;
+
+typedef void (*listener_function)(phase_id_type); //listener functor type that takes in a phase ID and returns nothing
 
 
 // double difference_measure_of_signatures(bitvec sig1, bitvec sig2);
@@ -67,6 +69,8 @@ typedef int phase_t;
 // void init_phase_detector();
 void read_file(char const log_file[]);
 // void cleanup_phase_detector();
+
+void test_listener(phase_id_type current_phase);
 
 
 class phase_detector {
@@ -79,20 +83,22 @@ class phase_detector {
         uint64_t instruction_count = 0;
         uint64_t stable_count = 0;
         uint64_t stable_min = 5;
-        phase_t phase = -1;
+        phase_id_type phase = -1;
 
         vector<bitvec> phase_table;
         
         //phase trace?? should it be deque/stack or vector/arraylist?
 
-        // vector<phase_t> phase_trace;
-        deque<phase_t> phase_trace;
+        // vector<phase_id_type> phase_trace;
+        deque<phase_id_type> phase_trace;
+
+        vector<listener_function> listeners;
     public:
         double difference_measure_of_signatures(bitvec sig1, bitvec sig2);
         uint64_t hash_address(bitvec sig);
         void detect(uint64_t instruction_pointer);
         void init_phase_detector();
         void cleanup_phase_detector();
-        // void register_listeners();
+        void register_listeners(listener_function f);
         int small_or_medium = 0;
 };

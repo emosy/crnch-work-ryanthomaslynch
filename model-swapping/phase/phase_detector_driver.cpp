@@ -22,7 +22,7 @@
 
 
 // Phase detection driver code
-// Version 0.2
+// Version 0.3
 
 #include "phase_detector.h"
 
@@ -95,6 +95,8 @@ int main(int argc, char const *argv[])
     } else {
         // string log_file = "stream.ssv";
         // read_file("stream.ssv");
+        //test listeners
+        // detector.register_listeners(test_listener);
         read_file("meabo.small.txt");
         detector.cleanup_phase_detector(); //probably not needed
         detector.small_or_medium = 1;
@@ -103,4 +105,9 @@ int main(int argc, char const *argv[])
     }
     // cout << log_file << endl;
     return 0;
+}
+
+
+void test_listener(phase_id_type current_phase) {
+    cout << current_phase << endl;
 }

@@ -25,7 +25,7 @@
 
 
 // Phase detection code
-// Version 0.2
+// Version 0.3
 
 #include "phase_detector.h"
 
@@ -63,7 +63,6 @@ void phase_detector::detect(uint64_t instruction_pointer) {
                 phase_table.push_back(current_signature);
                 phase = phase_table.size() - 1; // or indexof curr_sig?
                 // cout << phase << endl;
-                // printf("")
                 //line 194 in the python
             }
         } else { //line 196 in python
@@ -96,12 +95,16 @@ void phase_detector::detect(uint64_t instruction_pointer) {
         //whether or not the phase is stable, we need to update last phase and whatnot
         last_signature = current_signature;
         current_signature.reset();
-        //TODO: append curr phase to phase trace?
-        //need to figure out if this should be random access (vector) or sequential (stack/deque)
+        
+        //add the current phase ID to the phase trace - from line 209 in python
         phase_trace.push_back(phase);
 
+        //notify listeners of the current phase ID 
+        //from line 212 in python
+        for (auto f : listeners) {
+            f(phase);
+        }
 
-        //TODO: callback listeners??? from line 212 in python
 
         //TODO: add addr info to phase, dwarf map?
 
@@ -117,6 +120,7 @@ void phase_detector::init_phase_detector() {
     phase = -1;
     phase_table.clear();
     phase_trace.clear();
+    listeners.clear();
 }
 
 void phase_detector::cleanup_phase_detector() {
@@ -147,4 +151,8 @@ void phase_detector::cleanup_phase_detector() {
     init_phase_detector();
 
 
+}
+
+void phase_detector::register_listeners(listener_function f) {
+    listeners.push_back(f);
 }
