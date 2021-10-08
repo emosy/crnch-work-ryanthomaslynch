@@ -78,7 +78,7 @@ class phase_detector {
 
         uint64_t instruction_count = 0;
         uint64_t stable_count = 0;
-        uint64_t stable_min = 3;
+        uint64_t stable_min = 5;
         phase_t phase = -1;
 
         vector<bitvec> phase_table;
@@ -93,4 +93,5 @@ class phase_detector {
         void detect(uint64_t instruction_pointer);
         void init_phase_detector();
         void cleanup_phase_detector();
+        // void register_listeners();
 };

@@ -92,7 +92,7 @@ int main(int argc, char const *argv[])
     } else {
         // string log_file = "stream.ssv";
         // read_file("stream.ssv");
-        read_file("meabo.medium.txt");
+        read_file("meabo.small.txt");
 
     }
     // cout << log_file << endl;
