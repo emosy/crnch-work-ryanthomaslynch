@@ -25,49 +25,29 @@
 
 
 // Phase detection code
-// Version 0.1
+// Version 0.2
 
 #include "phase_detector.h"
 
 using namespace std;
 
+//phase detector class defined in phase_detector.h
 
 
-
-
-bitvec current_signature;
-bitvec last_signature;
-
-hash<bitvec> hash_bitvec;
-
-uint64_t instruction_count = 0;
-uint64_t stable_count = 0;
-uint64_t stable_min = 3;
-phase_t phase = -1;
-
-vector<bitvec> phase_table;
-
-
-//phase trace?? should it be deque/stack or vector/arraylist?
-
-// vector<phase_t> phase_trace;
-deque<phase_t> phase_trace;
-
-
-double difference_measure_of_signatures(bitvec sig1, bitvec sig2) {
+double phase_detector::difference_measure_of_signatures(bitvec sig1, bitvec sig2) {
     auto xor_signatures = sig1 ^ sig2;
     auto or_signatures = sig1 | sig2;
     return static_cast<double>(xor_signatures.count()) / or_signatures.count(); // this should work with any compiler
     // return ((double) xor_signatures.__builtin_count()) / or_signatures.__builtin_count(); // this might only work with GCC
 }
 
-uint64_t hash_address(bitvec sig) {
+uint64_t phase_detector::hash_address(bitvec sig) {
     auto signature_minus_bottom_drop_bits = sig >> drop_bits;
     return hash_bitvec(signature_minus_bottom_drop_bits) >> (64 - log2_signature_len);
     //i don't entirely understand why im doing the right shift by only 54 bits... like why 64 - 10?
 }
 
-void phase_detector(uint64_t instruction_pointer) {
+void phase_detector::detect(uint64_t instruction_pointer) {
     auto ip = instruction_pointer;
     current_signature[hash_address(ip)] = 1;
     instruction_count += 1; // should this be before or after the if?
@@ -128,7 +108,7 @@ void phase_detector(uint64_t instruction_pointer) {
     }
 }
 
-void init_phase_detector() {
+void phase_detector::init_phase_detector() {
     current_signature.reset();
     last_signature.reset();
     // hash_bitvec
@@ -139,7 +119,7 @@ void init_phase_detector() {
     phase_trace.clear();
 }
 
-void cleanup_phase_detector() {
+void phase_detector::cleanup_phase_detector() {
 
     
     if (DEBUG) {

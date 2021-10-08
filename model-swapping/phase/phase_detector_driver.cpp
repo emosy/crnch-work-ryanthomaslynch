@@ -22,7 +22,7 @@
 
 
 // Phase detection driver code
-// Version 0.1
+// Version 0.2
 
 #include "phase_detector.h"
 
@@ -38,6 +38,8 @@ void read_file(char const log_file[]) {
     char *is_write = (char *) malloc(sizeof(char));
     uint64_t *addr_ip = (uint64_t *) malloc(sizeof(uint64_t)), *addr2 = (uint64_t *) malloc(sizeof(uint64_t)), *data_size = (uint64_t *) malloc(sizeof(uint64_t));
 
+    phase_detector detector;
+    detector.init_phase_detector(); //probably not needed
 
 
     while (!feof(in_file)) {
@@ -55,10 +57,10 @@ void read_file(char const log_file[]) {
         // if (DEBUG) {
         //     printf("%lu \n", *addr_ip);
         // }
-        phase_detector(*addr_ip);
+        detector.detect(*addr_ip);
     }
 
-    cleanup_phase_detector();
+    detector.cleanup_phase_detector();
 
     free(is_write);
     free(addr_ip);
@@ -84,7 +86,6 @@ void read_file(char const log_file[]) {
 
 int main(int argc, char const *argv[])
 {
-    init_phase_detector();
     if (argc > 1) {
         // string log_file(argv[2]);
         read_file(argv[2]);

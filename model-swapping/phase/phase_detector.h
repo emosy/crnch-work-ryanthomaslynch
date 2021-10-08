@@ -22,7 +22,7 @@
 
 
 // Phase detection header file
-// Version 0.1
+// Version 0.2
 
 
 #include <cstdio>
@@ -61,9 +61,36 @@ using bitvec = bitset<signature_len>;
 typedef int phase_t;
 
 
-double difference_measure_of_signatures(bitvec sig1, bitvec sig2);
-uint64_t hash_address(bitvec sig);
-void phase_detector(uint64_t instruction_pointer);
-void init_phase_detector();
+// double difference_measure_of_signatures(bitvec sig1, bitvec sig2);
+// uint64_t hash_address(bitvec sig);
+// void detect(uint64_t instruction_pointer);
+// void init_phase_detector();
 void read_file(char const log_file[]);
-void cleanup_phase_detector();
+// void cleanup_phase_detector();
+
+
+class phase_detector {
+    private:
+        bitvec current_signature;
+        bitvec last_signature;
+
+        hash<bitvec> hash_bitvec;
+
+        uint64_t instruction_count = 0;
+        uint64_t stable_count = 0;
+        uint64_t stable_min = 3;
+        phase_t phase = -1;
+
+        vector<bitvec> phase_table;
+        
+        //phase trace?? should it be deque/stack or vector/arraylist?
+
+        // vector<phase_t> phase_trace;
+        deque<phase_t> phase_trace;
+    public:
+        double difference_measure_of_signatures(bitvec sig1, bitvec sig2);
+        uint64_t hash_address(bitvec sig);
+        void detect(uint64_t instruction_pointer);
+        void init_phase_detector();
+        void cleanup_phase_detector();
+};
