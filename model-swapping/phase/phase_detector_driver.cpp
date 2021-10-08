@@ -52,11 +52,13 @@ void read_file(char const log_file[]) {
             printf("uh oh! only matched %d \n", matched);
         }
         // cout << addr_ip << endl;
-        if (DEBUG) {
-            printf("%lu \n", *addr_ip);
-        }
+        // if (DEBUG) {
+        //     printf("%lu \n", *addr_ip);
+        // }
         phase_detector(*addr_ip);
     }
+
+    cleanup_phase_detector();
 
     free(is_write);
     free(addr_ip);
@@ -89,7 +91,7 @@ int main(int argc, char const *argv[])
     } else {
         // string log_file = "stream.ssv";
         // read_file("stream.ssv");
-        read_file("meabo.small.txt");
+        read_file("meabo.medium.txt");
 
     }
     // cout << log_file << endl;

@@ -138,3 +138,23 @@ void init_phase_detector() {
     phase_table.clear();
     phase_trace.clear();
 }
+
+void cleanup_phase_detector() {
+
+    
+    if (DEBUG) {
+        ofstream log("phase_trace.txt");
+        
+        for (auto p : phase_trace) {
+            cout << p << endl;
+            if (log.is_open()) {
+                log << p << endl;
+            }
+        }
+        log.close();
+    }
+
+    init_phase_detector();
+
+
+}

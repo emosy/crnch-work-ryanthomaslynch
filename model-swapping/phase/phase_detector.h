@@ -53,7 +53,7 @@ using namespace std;
 #define signature_len 1024
 #define log2_signature_len 10
 #define drop_bits 3
-#define DEBUG 0
+#define DEBUG 1
 
 
 using bitvec = bitset<signature_len>;
@@ -66,3 +66,4 @@ uint64_t hash_address(bitvec sig);
 void phase_detector(uint64_t instruction_pointer);
 void init_phase_detector();
 void read_file(char const log_file[]);
+void cleanup_phase_detector();
