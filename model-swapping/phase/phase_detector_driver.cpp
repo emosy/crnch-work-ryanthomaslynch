@@ -53,7 +53,7 @@ void read_file(char const log_file[]) {
         // int matched = fscanf(in_file, "%d %lu %lu", is_write, addr_ip, addr2);
         //use for old file format of unsigned ints
         // char address[14]
-        int matched = sscanf(line_string.c_str(), "%llx,%c,%lu,%llx", addr_ip, is_write, data_size, addr2);
+        int matched = sscanf(line_string.c_str(), "%lx,%c,%lu,%lx", addr_ip, is_write, data_size, addr2);
         //use for file format of hex addr, r/w, data size, data addr
         if (matched < 3) {
             // 4 if new format, 3 if old format
