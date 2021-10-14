@@ -33,7 +33,7 @@ static phase_detector detector;
 
 
 void read_file(char const log_file[]) {
-    FILE* in_file = fopen(log_file, "r");
+    // FILE* in_file = fopen(log_file, "r");
     // int is_write, matched;
 
     // int *is_write = (int *) malloc(sizeof(int));
@@ -43,12 +43,17 @@ void read_file(char const log_file[]) {
    
     int start = 1;
 
-    while (!feof(in_file)) {
+    string line_string;
+    // ifstream in_stream(log_file);
+    ifstream in_stream;
+    in_stream.open(log_file);
+
+    while (getline(in_stream, line_string)) {
         // if 
         // int matched = fscanf(in_file, "%d %lu %lu", is_write, addr_ip, addr2);
         //use for old file format of unsigned ints
         // char address[14]
-        int matched = fscanf(in_file, "%lx,%c,%lu,%lx", addr_ip, is_write, data_size, addr2);
+        int matched = sscanf(line_string.c_str(), "%llx,%c,%lu,%llx", addr_ip, is_write, data_size, addr2);
         //use for file format of hex addr, r/w, data size, data addr
         if (matched < 3) {
             // 4 if new format, 3 if old format
@@ -56,7 +61,9 @@ void read_file(char const log_file[]) {
                 start = 0;
                 continue;
             } else {
-                printf("uh oh! only matched %d \n", matched);
+                cout << line_string;
+                // matched = fscanf(in_file, "%s", )
+                // printf("uh oh! only matched %d \n", matched);
             }
         } else {
             // cout << addr_ip << endl;
