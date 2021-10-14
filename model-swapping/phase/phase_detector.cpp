@@ -126,29 +126,29 @@ void phase_detector::init_phase_detector() {
     listeners.clear();
 }
 
-void phase_detector::cleanup_phase_detector() {
+void phase_detector::cleanup_phase_detector(string log_file_name) {
 
     
     if (DEBUG) {
-        if (small_or_medium == 0) {
-            ofstream log("phase_trace_small.txt");
-            for (auto p : phase_trace) {
-                // cout << p << endl;
-                if (log.is_open()) {
-                    log << p << endl;
-                }
+        // if (small_or_medium == 0) {
+        ofstream log(log_file_name);
+        for (auto p : phase_trace) {
+            // cout << p << endl;
+            if (log.is_open()) {
+                log << p << endl;
             }
-            log.close();
-        } else {
-            ofstream log("phase_trace_medium.txt");
-            for (auto p : phase_trace) {
-                // cout << p << endl;
-                if (log.is_open()) {
-                    log << p << endl;
-                }
-            }
-            log.close();
         }
+        log.close();
+        // } else {
+        //     ofstream log("phase_trace_medium.txt");
+        //     for (auto p : phase_trace) {
+        //         // cout << p << endl;
+        //         if (log.is_open()) {
+        //             log << p << endl;
+        //         }
+        //     }
+        //     log.close();
+        // }
     }
 
     init_phase_detector();

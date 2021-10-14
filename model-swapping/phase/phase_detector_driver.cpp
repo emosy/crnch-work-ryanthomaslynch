@@ -92,16 +92,19 @@ int main(int argc, char const *argv[])
     if (argc > 1) {
         // string log_file(argv[2]);
         read_file(argv[2]);
+        detector.cleanup_phase_detector(argv[3]);
     } else {
         // string log_file = "stream.ssv";
         // read_file("stream.ssv");
         //test listeners
         // detector.register_listeners(test_listener);
-        read_file("meabo.small.txt");
-        detector.cleanup_phase_detector(); //probably not needed
-        detector.small_or_medium = 1;
-        read_file("meabo.medium.txt");
-        detector.cleanup_phase_detector(); //probably not needed
+        read_file("xsbench-g10-p500-1.log");
+        read_file("xsbench-g10-p500-2.log");
+        read_file("xsbench-g10-p500-3.log");
+        // detector.cleanup_phase_detector(); //probably not needed
+        // detector.small_or_medium = 1;
+        // read_file("meabo.medium.txt");
+        detector.cleanup_phase_detector("phase_trace_xsbench.txt");
     }
     // cout << log_file << endl;
     return 0;

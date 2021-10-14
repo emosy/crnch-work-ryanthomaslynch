@@ -98,7 +98,7 @@ class phase_detector {
         uint64_t hash_address(bitvec sig);
         void detect(uint64_t instruction_pointer);
         void init_phase_detector();
-        void cleanup_phase_detector();
+        void cleanup_phase_detector(string log_file_name);
         void register_listeners(listener_function f);
         int small_or_medium = 0;
 };
