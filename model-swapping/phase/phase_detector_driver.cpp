@@ -61,9 +61,9 @@ void read_file(char const log_file[]) {
                 start = 0;
                 continue;
             } else {
-                cout << line_string;
+                cout << line_string << endl;
                 // matched = fscanf(in_file, "%s", )
-                // printf("uh oh! only matched %d \n", matched);
+                printf("uh oh! only matched %d \n", matched);
             }
         } else {
             // cout << addr_ip << endl;
