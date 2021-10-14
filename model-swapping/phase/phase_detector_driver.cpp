@@ -22,7 +22,7 @@
 
 
 // Phase detection driver code
-// Version 0.3
+// Version 0.4
 
 #include "phase_detector.h"
 
