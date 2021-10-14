@@ -40,8 +40,8 @@ void read_file(char const log_file[]) {
     char *is_write = (char *) malloc(sizeof(char));
     uint64_t *addr_ip = (uint64_t *) malloc(sizeof(uint64_t)), *addr2 = (uint64_t *) malloc(sizeof(uint64_t)), *data_size = (uint64_t *) malloc(sizeof(uint64_t));
 
-    
-
+   
+    int start = 1;
 
     while (!feof(in_file)) {
         // if 
@@ -52,13 +52,21 @@ void read_file(char const log_file[]) {
         //use for file format of hex addr, r/w, data size, data addr
         if (matched < 3) {
             // 4 if new format, 3 if old format
-            printf("uh oh! only matched %d \n", matched);
+            if (start == 1) {
+                start = 0;
+                continue;
+            } else {
+                printf("uh oh! only matched %d \n", matched);
+            }
+        } else {
+            // cout << addr_ip << endl;
+            // if (DEBUG) {
+            //     printf("%lu \n", *addr_ip);
+            // }
+            detector.detect(*addr_ip);
         }
-        // cout << addr_ip << endl;
-        // if (DEBUG) {
-        //     printf("%lu \n", *addr_ip);
-        // }
-        detector.detect(*addr_ip);
+       
+        
     }
 
     // detector.cleanup_phase_detector();
