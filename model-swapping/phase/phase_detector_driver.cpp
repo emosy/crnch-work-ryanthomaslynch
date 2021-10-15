@@ -22,7 +22,7 @@
 
 
 // Phase detection driver code
-// Version 0.5
+// Version 0.6
 
 #include "phase_detector.h"
 
@@ -32,83 +32,120 @@ static phase_detector detector;
 
 
 
-void read_file(char const log_file[]) {
-    // FILE* in_file = fopen(log_file, "r");
-    // int is_write, matched;
+void read_file(char const log_file[], int is_binary /*= 1*/) {
+    
+    if (is_binary == 1) {
+        cout << "binary test!!!" << endl << endl;
 
-    // int *is_write = (int *) malloc(sizeof(int));
-    char *is_write = (char *) malloc(sizeof(char));
-    uint64_t *addr_ip = (uint64_t *) malloc(sizeof(uint64_t)), *addr2 = (uint64_t *) malloc(sizeof(uint64_t)), *data_size = (uint64_t *) malloc(sizeof(uint64_t));
-
-   
-    int start = 1;
-
-    string line_string;
-    // ifstream in_stream(log_file);
-    ifstream in_stream;
-    in_stream.open(log_file);
-
-    while (getline(in_stream, line_string)) {
-        // if 
-        // int matched = fscanf(in_file, "%d %lu %lu", is_write, addr_ip, addr2);
-        //use for old file format of unsigned ints
-        // char address[14]
-        int matched = sscanf(line_string.c_str(), "%lx,%c,%lu,%lx", addr_ip, is_write, data_size, addr2);
-        //use for file format of hex addr, r/w, data size, data addr
-        if (matched < 3) {
-            // 4 if new format, 3 if old format
-            if (start == 1) {
-                start = 0;
-                continue;
-            } else {
-                cout << line_string << endl;
-                // matched = fscanf(in_file, "%s", )
-                printf("uh oh! only matched %d \n", matched);
-            }
-        } else {
-            // cout << addr_ip << endl;
-            // if (DEBUG) {
-            //     printf("%lu \n", *addr_ip);
-            // }
-            detector.detect(*addr_ip);
-        }
-       
+        ifstream in_stream;
+        in_stream.open(log_file);
+        binary_output_struct_t current;
         
-    }
+        while (in_stream.good()) {
+            in_stream.read((char*)&current, sizeof(binary_output_struct_t));
+            // cout << current << endl;
+            cout << current.instruction_pointer << endl;
+        }
 
-    // detector.cleanup_phase_detector();
 
-    free(is_write);
-    free(addr_ip);
-    free(addr2);
-    free(data_size);
 
-    // fstream in_file(log_file, ios_base::in);
+
+    } else {
+        // FILE* in_file = fopen(log_file, "r");
+        // int is_write, matched;
+
+        // int *is_write = (int *) malloc(sizeof(int));
+        char *is_write = (char *) malloc(sizeof(char));
+        uint64_t *addr_ip = (uint64_t *) malloc(sizeof(uint64_t)), *addr2 = (uint64_t *) malloc(sizeof(uint64_t)), *data_size = (uint64_t *) malloc(sizeof(uint64_t));
 
     
+        int start = 1;
 
-    // while (!in_file.eof()) {
-    //     in_file >> is_write;
-    //     in_file >> addr_ip;
-    //     in_file >> addr2;
+        string line_string;
+        // ifstream in_stream(log_file);
+        ifstream in_stream;
+        in_stream.open(log_file);
 
-    //     cout << addr_ip << endl;
+        while (getline(in_stream, line_string)) {
+            // if 
+            // int matched = fscanf(in_file, "%d %lu %lu", is_write, addr_ip, addr2);
+            //use for old file format of unsigned ints
+            // char address[14]
+            int matched = sscanf(line_string.c_str(), "%lx,%c,%lu,%lx", addr_ip, is_write, data_size, addr2);
+            //use for file format of hex addr, r/w, data size, data addr
+            if (matched < 3) {
+                // 4 if new format, 3 if old format
+                if (start == 1) {
+                    start = 0;
+                    continue;
+                } else {
+                    cout << line_string << endl;
+                    // matched = fscanf(in_file, "%s", )
+                    printf("uh oh! only matched %d \n", matched);
+                }
+            } else {
+                // cout << addr_ip << endl;
+                // if (DEBUG) {
+                //     printf("%lu \n", *addr_ip);
+                // }
+                detector.detect(*addr_ip);
+            }
+        
+            
+        }
 
-    //     // bitvec inst_pointer_bitvec(addr_ip);
-    //     phase_detector(addr_ip);
-    // }
+        // detector.cleanup_phase_detector();
+
+        free(is_write);
+        free(addr_ip);
+        free(addr2);
+        free(data_size);
+
+        // fstream in_file(log_file, ios_base::in);
+
+        
+
+        // while (!in_file.eof()) {
+        //     in_file >> is_write;
+        //     in_file >> addr_ip;
+        //     in_file >> addr2;
+
+        //     cout << addr_ip << endl;
+
+        //     // bitvec inst_pointer_bitvec(addr_ip);
+        //     phase_detector(addr_ip);
+        // }
+    }
+    
 }
 
 
 int main(int argc, char const *argv[])
 {
+    //args format:
+    // ./phase [0] -t (text, optional) [1] phase_trace_output_name [1 or 2] log_file_1 log_file_2 ...
+
+
     // phase_detector detector;
     detector.init_phase_detector(); //probably not needed
     if (argc > 1) {
+        int is_binary = 1;
+        int arg_index = 2;
+        if ( string(argv[1]) == "-t") { //alternate: strcmp(argv[1], "hello") == 0
+            is_binary = 0;
+            arg_index = 3;
+        }
+        string phase_trace_output_name(argv[arg_index - 1]);
+        while (arg_index < argc) {
+            read_file(argv[arg_index], is_binary);
+            arg_index++;
+        }
         // string log_file(argv[2]);
-        read_file(argv[2]);
-        detector.cleanup_phase_detector(argv[3]);
+        detector.cleanup_phase_detector(phase_trace_output_name);
     } else {
+
+        //for debugging purposes :PPP
+
         // string log_file = "stream.ssv";
         // read_file("stream.ssv");
         //test listeners

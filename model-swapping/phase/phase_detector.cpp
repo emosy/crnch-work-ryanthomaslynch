@@ -25,7 +25,7 @@
 
 
 // Phase detection code
-// Version 0.5
+// Version 0.6
 
 #include "phase_detector.h"
 
@@ -130,7 +130,7 @@ void phase_detector::print_log_file(string log_file_name) {
     
     ofstream log(log_file_name);
     // for (auto p : phase_trace) {
-    for (int index = 0; index < phase_trace.size(); index++) {
+    for (size_t index = 0; index < phase_trace.size(); index++) {
         // cout << p << endl;
         auto p = phase_trace[index];
         if (log.is_open()) {

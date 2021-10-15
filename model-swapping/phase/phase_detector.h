@@ -22,7 +22,7 @@
 
 
 // Phase detection header file
-// Version 0.5
+// Version 0.6
 
 
 #include <cstdio>
@@ -67,10 +67,24 @@ typedef void (*listener_function)(phase_id_type); //listener functor type that t
 // uint64_t hash_address(bitvec sig);
 // void detect(uint64_t instruction_pointer);
 // void init_phase_detector();
-void read_file(char const log_file[]);
+void read_file(char const log_file[], int is_binary = 1);
 // void cleanup_phase_detector();
 
 void test_listener(phase_id_type current_phase);
+
+
+//used for reading from memtrace binary output files
+struct Binary_output_struct_type {
+
+    bool read_or_write;
+    uint64_t virtual_address;
+    uint64_t size_of_access;
+    uint64_t instruction_pointer;
+
+};
+
+typedef struct Binary_output_struct_type binary_output_struct_t;
+
 
 
 class phase_detector {
