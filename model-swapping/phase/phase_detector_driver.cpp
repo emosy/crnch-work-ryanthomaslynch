@@ -44,7 +44,11 @@ void read_file(char const log_file[], int is_binary /*= 1*/) {
         while (in_stream.good()) {
             in_stream.read((char*)&current, sizeof(binary_output_struct_t));
             // cout << current << endl;
-            cout << current.instruction_pointer << endl;
+            // cout << current.instruction_pointer << endl;
+
+            detector.detect(current.instruction_pointer);
+
+
         }
 
 
