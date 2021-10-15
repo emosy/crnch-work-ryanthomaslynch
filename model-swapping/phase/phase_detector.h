@@ -22,7 +22,7 @@
 
 
 // Phase detection header file
-// Version 0.4
+// Version 0.5
 
 
 #include <cstdio>
@@ -100,5 +100,6 @@ class phase_detector {
         void init_phase_detector();
         void cleanup_phase_detector(string log_file_name);
         void register_listeners(listener_function f);
-        int small_or_medium = 0;
+        void print_log_file(string log_file_name);
+        int print_log_file_true = 1;
 };

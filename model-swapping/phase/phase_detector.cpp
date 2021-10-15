@@ -25,7 +25,7 @@
 
 
 // Phase detection code
-// Version 0.4
+// Version 0.5
 
 #include "phase_detector.h"
 
@@ -126,33 +126,37 @@ void phase_detector::init_phase_detector() {
     listeners.clear();
 }
 
-void phase_detector::cleanup_phase_detector(string log_file_name) {
-
+void phase_detector::print_log_file(string log_file_name) {
     
-    if (DEBUG) {
-        // if (small_or_medium == 0) {
-        ofstream log(log_file_name);
-        for (auto p : phase_trace) {
-            // cout << p << endl;
-            if (log.is_open()) {
-                log << p << endl;
-            }
+    ofstream log(log_file_name);
+    // for (auto p : phase_trace) {
+    for (int index = 0; index < phase_trace.size(); index++) {
+        // cout << p << endl;
+        auto p = phase_trace[index];
+        if (log.is_open()) {
+            log << index * 1000 << "," << p << '\n';
         }
-        log.close();
-        // } else {
-        //     ofstream log("phase_trace_medium.txt");
-        //     for (auto p : phase_trace) {
-        //         // cout << p << endl;
-        //         if (log.is_open()) {
-        //             log << p << endl;
-        //         }
-        //     }
-        //     log.close();
-        // }
     }
+    log.close();
+    // } else {
+    //     ofstream log("phase_trace_medium.txt");
+    //     for (auto p : phase_trace) {
+    //         // cout << p << endl;
+    //         if (log.is_open()) {
+    //             log << p << endl;
+    //         }
+    //     }
+    //     log.close();
+    // }
+}
 
+
+void phase_detector::cleanup_phase_detector(string log_file_name = "phase_trace.csv") {
+
+    if (print_log_file_true == 1) {
+        print_log_file(log_file_name);
+    }
     init_phase_detector();
-
 
 }
 
