@@ -119,7 +119,8 @@ int main(int argc, char const *argv[])
         // detector.cleanup_phase_detector(); //probably not needed
         // detector.small_or_medium = 1;
         // read_file("meabo.medium.txt");
-        detector.cleanup_phase_detector("phase_trace_xsbench.txt");
+        // detector.cleanup_phase_detector("phase_trace_xsbench.txt");
+        detector.print_log_file("phase_trace_xsbench.csv");
     }
     // cout << log_file << endl;
     return 0;
