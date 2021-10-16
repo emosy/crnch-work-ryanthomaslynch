@@ -31,6 +31,10 @@ using namespace std;
 static phase_detector detector;
 
 
+static phase_id_type old_phase = -1;
+static uint64_t interval = 0;
+static ofstream dram_phase_trace("dram_phase_trace.csv");
+
 
 void read_file(char const log_file[], int is_binary /*= 1*/) {
     
@@ -175,15 +179,11 @@ void test_listener(phase_id_type current_phase) {
 }
 
 
-static phase_id_type old_phase = -1;
-static uint64_t interval = 0;
-static ofstream dram_phase_trace("dram_phase_trace.csv");
-
 void dram_phase_trace_listener(phase_id_type new_phase) {
     if (new_phase != old_phase) {
         if (dram_phase_trace.good()) {
             if (old_phase != -1) {
-                cout << interval * interval_len << "," << old_phase << endl;
+                // cout << interval * interval_len << "," << old_phase << endl;
                 dram_phase_trace << interval * interval_len << "," << old_phase << '\n';
             }
         } else {
