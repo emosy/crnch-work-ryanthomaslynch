@@ -22,7 +22,7 @@
 
 
 // Phase detection header file
-// Version 0.7
+// Version 0.8
 
 
 #include <cstdio>

@@ -25,7 +25,7 @@
 
 
 // Phase detection code
-// Version 0.7
+// Version 0.8
 
 #include "phase_detector.h"
 

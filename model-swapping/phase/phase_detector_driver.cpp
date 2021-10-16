@@ -22,7 +22,7 @@
 
 
 // Phase detection driver code
-// Version 0.7
+// Version 0.8
 
 #include "phase_detector.h"
 
@@ -130,6 +130,13 @@ void read_file(char const log_file[], int is_binary /*= 1*/) {
 
 int main(int argc, char const *argv[])
 {
+    if (argc == 1 or (argc == 2 and (string(argv[1]) == "-h" or string(argv[1]) == "--help"))) {
+        cout << "Usage: ./phase [OPTION] [OUTPUT FILE] [INPUT FILES]...\n" <<
+        "Options are -t which changes input mode from binary to text (from libmemtrace)\n" <<
+        "and -h or --help which displays this usage message." << endl;
+        return 0;
+    }
+
     //args format:
     // ./phase [0] -t (text, optional) [1] phase_trace_output_name [1 or 2] log_file_1 log_file_2 ...
 
