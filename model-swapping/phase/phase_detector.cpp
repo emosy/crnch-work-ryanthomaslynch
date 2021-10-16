@@ -52,7 +52,7 @@ uint64_t phase_detector::hash_address(uint64_t address) {
 
     //rand: minstd_rand(address_minus_bottom_drop_bits)() - time test on big XS: 7.549s
     //old: hash<bitset<1024>>()(address_minus_bottom_drop_bits) - time test on big XS: 18.539s
-    //alt: hash<bitset<64>>()(address_minus_bottom_drop_bits) - time test on big XS:
+    //alt: hash<bitset<64>>()(address_minus_bottom_drop_bits) - time test on big XS: 7.962s
     //not really a hash: hash<uint64_t>()(address_minus_bottom_drop_bits) - time test on big XS:
 }
 
