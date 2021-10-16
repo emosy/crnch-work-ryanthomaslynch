@@ -41,12 +41,18 @@ double phase_detector::difference_measure_of_signatures(bitvec sig1, bitvec sig2
     // return ((double) xor_signatures.__builtin_count()) / or_signatures.__builtin_count(); // this might only work with GCC
 }
 
-uint64_t phase_detector::hash_address(bitvec sig) {
-    auto signature_minus_bottom_drop_bits = sig >> drop_bits;
+uint64_t phase_detector::hash_address(uint64_t address) {
+    auto address_minus_bottom_drop_bits = address >> drop_bits;
+    auto hashed_randomized_address = mt19937(address_minus_bottom_drop_bits)();
     //drop the bottom {drop_bits} bits of the signature
-    //hash it then return the top bits of the hash (the number of bits determined by the length of the signature)
+    //hash it then return the top {log2_signature_len} bits of the hash (the number of bits determined by the length of the signature)
     //use this to then index into a bitvec that represents the current signature to set a specific bit to 1
-    return hash_bitvec(signature_minus_bottom_drop_bits) >> (64 - log2_signature_len);
+    return hashed_randomized_address >> (sizeof(hashed_randomized_address) /* likely 32 if 32-bit MT or 64 if 64-bit MT or other hash */ - log2_signature_len);
+
+    //MT: mt19937(address_minus_bottom_drop_bits)() - time test on big XS: 
+    //old: hash<bitset<1024>>()(address_minus_bottom_drop_bits) - time test on big XS: 42.984s
+    //alt: hash<bitset<64>>()(address_minus_bottom_drop_bits) - time test on big XS:
+    //not really a hash: hash<uint64_t>()(address_minus_bottom_drop_bits) - time test on big XS:
 }
 
 void phase_detector::detect(uint64_t instruction_pointer) {

@@ -33,10 +33,13 @@
 #include <deque>
 // #include <map>
 #include <vector>
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
+#include <bitset>
+#include <fstream>
 //TODO: replace bits/stdc++ with something that actually works for other compilers?
 // #include <bit>
-#include <functional>
+// #include <functional>
+#include <random>
 // #include <pair>
 
 using namespace std;
@@ -92,7 +95,7 @@ class phase_detector {
         bitvec current_signature;
         bitvec last_signature;
 
-        hash<bitvec> hash_bitvec;
+        // hash<bitvec> hash_bitvec;
 
         uint64_t instruction_count = 0;
         uint64_t stable_count = 0;
@@ -109,7 +112,7 @@ class phase_detector {
         vector<listener_function> listeners;
     public:
         double difference_measure_of_signatures(bitvec sig1, bitvec sig2);
-        uint64_t hash_address(bitvec sig);
+        uint64_t hash_address(uint64_t address);
         void detect(uint64_t instruction_pointer);
         void init_phase_detector();
         void cleanup_phase_detector(string log_file_name);
