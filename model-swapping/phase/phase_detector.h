@@ -22,7 +22,7 @@
 
 
 // Phase detection header file
-// Version 0.6
+// Version 0.7
 
 
 #include <cstdio>
@@ -74,6 +74,7 @@ void read_file(char const log_file[], int is_binary = 1);
 // void cleanup_phase_detector();
 
 void test_listener(phase_id_type current_phase);
+void dram_phase_trace_listener(phase_id_type new_phase);
 
 
 //used for reading from memtrace binary output files

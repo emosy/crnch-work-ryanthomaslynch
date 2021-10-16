@@ -22,7 +22,7 @@
 
 
 // Phase detection driver code
-// Version 0.6
+// Version 0.7
 
 #include "phase_detector.h"
 
@@ -132,6 +132,7 @@ int main(int argc, char const *argv[])
 
     // phase_detector detector;
     detector.init_phase_detector(); //probably not needed
+    detector.register_listeners(dram_phase_trace_listener);
     if (argc > 1) {
         int is_binary = 1;
         int arg_index = 2;
@@ -164,10 +165,30 @@ int main(int argc, char const *argv[])
         detector.print_log_file("phase_trace_xsbench.csv");
     }
     // cout << log_file << endl;
+    dram_phase_trace.close();
     return 0;
 }
 
 
 void test_listener(phase_id_type current_phase) {
     cout << current_phase << endl;
+}
+
+
+static phase_id_type old_phase = -1;
+static uint64_t interval = 0;
+static ofstream dram_phase_trace("dram_phase_trace.csv");
+
+void dram_phase_trace_listener(phase_id_type new_phase) {
+    if (new_phase != old_phase) {
+        if (dram_phase_trace.good()) {
+            if (old_phase != -1) {
+                dram_phase_trace << interval * interval_len << "," << old_phase << '\n';
+            }
+        } else {
+            cerr << "dram phase trace file not good anymore! on phase " << new_phase << endl;
+        }
+        old_phase = new_phase;
+    }
+    interval += 1;
 }
