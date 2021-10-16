@@ -183,6 +183,7 @@ void dram_phase_trace_listener(phase_id_type new_phase) {
     if (new_phase != old_phase) {
         if (dram_phase_trace.good()) {
             if (old_phase != -1) {
+                cout << interval * interval_len << "," << old_phase << endl;
                 dram_phase_trace << interval * interval_len << "," << old_phase << '\n';
             }
         } else {
