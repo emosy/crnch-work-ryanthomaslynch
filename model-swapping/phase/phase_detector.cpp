@@ -43,7 +43,8 @@ double phase_detector::difference_measure_of_signatures(bitvec sig1, bitvec sig2
 
 uint64_t phase_detector::hash_address(uint64_t address) {
     auto address_minus_bottom_drop_bits = address >> drop_bits;
-    uint32_t hashed_randomized_address = mt19937(address_minus_bottom_drop_bits)();
+    uint32_t hashed_randomized_address = hash<bitset<64>>()(address_minus_bottom_drop_bits);
+    
     //drop the bottom {drop_bits} bits of the signature
     //hash it then return the top {log2_signature_len} bits of the hash (the number of bits determined by the length of the signature)
     //use this to then index into a bitvec that represents the current signature to set a specific bit to 1
