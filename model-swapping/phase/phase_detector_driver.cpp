@@ -43,28 +43,26 @@ void read_file(char const log_file[], int is_binary /*= 1*/) {
 
         ifstream in_stream;
         in_stream.open(log_file);
-        // binary_output_struct_t current;
-        // uint64_t *address_ip = (uint64_t *)
-        uint64_t address_ip = 0;
+        binary_output_struct_t current;
+        // uint64_t address_ip = 0;
         
         while (in_stream.good()) {
-            in_stream.ignore(3 * sizeof(uint64_t));
-            in_stream.read((char*)&address_ip, sizeof(address_ip));
+            // in_stream.ignore(3 * sizeof(uint64_t));
+            // in_stream.read((char*)&address_ip, sizeof(address_ip));
+
+            // if (DEBUG) {
+            //     cout << address_ip << endl;
+            // } else {
+            //     detector.detect(address_ip);
+            // }
+
+            //time for ignore on amg 50: 13.889s
+            //time for struct on amg 50: 
             
-            // in_stream.read((char*)&current, sizeof(binary_output_struct_t));
-            // cout << current << endl;
-            // cout << current.instruction_pointer << endl;
+            in_stream.read((char*)&current, sizeof(binary_output_struct_t));
+            detector.detect(current.instruction_pointer);
 
-            // detector.detect(current.instruction_pointer);
-            if (DEBUG) {
-                cout << address_ip << endl;
-            } else {
-                detector.detect(address_ip);
-            }
         }
-
-
-
 
     } else {
         // FILE* in_file = fopen(log_file, "r");
