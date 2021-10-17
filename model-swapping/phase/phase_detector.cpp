@@ -41,7 +41,7 @@ inline double phase_detector::difference_measure_of_signatures(bitvec sig1, bitv
     // return ((double) xor_signatures.__builtin_count()) / or_signatures.__builtin_count(); // this might only work with GCC
 }
 
-uint64_t phase_detector::hash_address(uint64_t address) {
+inline uint64_t phase_detector::hash_address(uint64_t address) {
     // auto address_minus_bottom_drop_bits = address >> drop_bits;
     // uint32_t hashed_randomized_address = hash_bitvec(address_minus_bottom_drop_bits); // minstd_rand(address_minus_bottom_drop_bits)(); //hash_bitvec(address_minus_bottom_drop_bits);
     

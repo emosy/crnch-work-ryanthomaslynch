@@ -114,7 +114,7 @@ class phase_detector {
         vector<listener_function> listeners;
     public:
         inline double difference_measure_of_signatures(bitvec sig1, bitvec sig2);
-        uint64_t hash_address(uint64_t address);
+        inline uint64_t hash_address(uint64_t address);
         void detect(uint64_t instruction_pointer);
         void init_phase_detector();
         void cleanup_phase_detector(string log_file_name);
