@@ -57,7 +57,8 @@ void read_file(char const log_file[], int is_binary /*= 1*/) {
             // }
 
             //time for ignore on amg 50: 13.889s
-            //time for struct on amg 50: 
+            //time for struct on amg 50: 10.726s
+            //time for struct with inlined fxns on amg 50: 
             
             in_stream.read((char*)&current, sizeof(binary_output_struct_t));
             detector.detect(current.instruction_pointer);

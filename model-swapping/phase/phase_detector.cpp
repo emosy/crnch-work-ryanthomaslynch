@@ -34,21 +34,21 @@ using namespace std;
 //phase detector class defined in phase_detector.h
 
 
-double phase_detector::difference_measure_of_signatures(bitvec sig1, bitvec sig2) {
-    auto xor_signatures = sig1 ^ sig2;
-    auto or_signatures = sig1 | sig2;
-    return static_cast<double>(xor_signatures.count()) / or_signatures.count(); // this should work with any compiler
+inline double phase_detector::difference_measure_of_signatures(bitvec sig1, bitvec sig2) {
+    // auto xor_signatures = sig1 ^ sig2;
+    // auto or_signatures = sig1 | sig2;
+    return static_cast<double>((sig1 ^ sig2).count()) / (sig1 | sig2).count(); // this should work with any compiler
     // return ((double) xor_signatures.__builtin_count()) / or_signatures.__builtin_count(); // this might only work with GCC
 }
 
-uint64_t phase_detector::hash_address(uint64_t address) {
-    auto address_minus_bottom_drop_bits = address >> drop_bits;
-    uint32_t hashed_randomized_address = hash_bitvec(address_minus_bottom_drop_bits); // minstd_rand(address_minus_bottom_drop_bits)(); //hash_bitvec(address_minus_bottom_drop_bits);
+inline uint64_t phase_detector::hash_address(uint64_t address) {
+    // auto address_minus_bottom_drop_bits = address >> drop_bits;
+    // uint32_t hashed_randomized_address = hash_bitvec(address_minus_bottom_drop_bits); // minstd_rand(address_minus_bottom_drop_bits)(); //hash_bitvec(address_minus_bottom_drop_bits);
     
     //drop the bottom {drop_bits} bits of the signature
     //hash it then return the top {log2_signature_len} bits of the hash (the number of bits determined by the length of the signature)
     //use this to then index into a bitvec that represents the current signature to set a specific bit to 1
-    return hashed_randomized_address >> (32 /*sizeof(uint32_t)*/ /* likely 32 if 32-bit MT or 64 if 64-bit MT or other hash */ - log2_signature_len);
+    return hash_bitvec(address >> drop_bits) >> (32 /*sizeof(uint32_t)*/ /* likely 32 if 32-bit MT or 64 if 64-bit MT or other hash */ - log2_signature_len);
 
     //rand: minstd_rand(address_minus_bottom_drop_bits)() - time test on big XS: 7.549s
     //old: hash<bitset<1024>>()(address_minus_bottom_drop_bits) - time test on big XS: 18.539s
