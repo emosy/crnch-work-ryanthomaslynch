@@ -39,7 +39,7 @@ static ofstream dram_phase_trace("dram_phase_trace.csv");
 void read_file(char const log_file[], int is_binary /*= 1*/) {
     
     if (is_binary == 1) {
-        cout << "binary test!!!" << endl << endl;
+        // cout << "binary test!!!" << endl << endl;
 
         ifstream in_stream;
         in_stream.open(log_file);
@@ -48,7 +48,7 @@ void read_file(char const log_file[], int is_binary /*= 1*/) {
         uint64_t address_ip = 0;
         
         while (in_stream.good()) {
-            in_stream.ignore(sizeof(bool) + sizeof(uint64_t) + sizeof(uint64_t));
+            in_stream.ignore(3 * sizeof(uint64_t));
             in_stream.read((char*)&address_ip, sizeof(address_ip));
             
             // in_stream.read((char*)&current, sizeof(binary_output_struct_t));
@@ -56,7 +56,11 @@ void read_file(char const log_file[], int is_binary /*= 1*/) {
             // cout << current.instruction_pointer << endl;
 
             // detector.detect(current.instruction_pointer);
-            detector.detect(address_ip);
+            if (DEBUG) {
+                cout << address_ip << endl;
+            } else {
+                detector.detect(address_ip);
+            }
         }
 
 
