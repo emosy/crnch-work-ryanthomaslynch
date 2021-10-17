@@ -57,8 +57,7 @@ uint64_t phase_detector::hash_address(uint64_t address) {
 }
 
 void phase_detector::detect(uint64_t instruction_pointer) {
-    auto ip = instruction_pointer;
-    current_signature[hash_address(ip)] = 1;
+    current_signature[hash_address(instruction_pointer)] = 1;
     
 
     if (instruction_count % interval_len == 0) {
