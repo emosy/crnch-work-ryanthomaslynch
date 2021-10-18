@@ -25,7 +25,7 @@
 
 
 // Phase detection code
-// Version 0.8
+// Version 0.9
 
 #include "phase_detector.h"
 
@@ -67,10 +67,9 @@ void phase_detector::detect(uint64_t instruction_pointer) {
         if (difference_measure_of_signatures(current_signature, last_signature) < threshold) {
             stable_count += 1;
             if (stable_count >= stable_min && phase == -1) {
-                //add the current signature to the phase table and make the phase # to its index
+                //add the current signature to the phase table and make the phase #/phase id to its index
                 phase_table.push_back(current_signature);
                 phase = phase_table.size() - 1; // or indexof curr_sig?
-                // cout << phase << endl;
                 //line 194 in the python
             }
         } else { //line 196 in python
@@ -80,24 +79,17 @@ void phase_detector::detect(uint64_t instruction_pointer) {
 
             //see if we've entered a phase we have seen before
             if (!phase_table.empty()) { //line 201 python
-                // vector<double> difference_scores_from_phase_table;
                 double best_diff = threshold; 
                 for (auto phase_table_iterator = phase_table.begin(); phase_table_iterator != phase_table.end(); phase_table_iterator++) {
-                    auto s = *phase_table_iterator;
-                    auto diff = difference_measure_of_signatures(current_signature, s);
+                    const auto s = *phase_table_iterator;
+                    const auto diff = difference_measure_of_signatures(current_signature, s);
                     // difference_scores_from_phase_table.push_back(diff);
                     if (diff < threshold && diff < best_diff) {
                         phase = std::distance(phase_table.begin(), phase_table_iterator);
                         best_diff = diff;
-                        // phase = index of s in phase_table?
-                        //oh yeah cuz phase is index in phase table duh
-                        //set current phase to the phase of the one with the lowest difference from current
+                        //set current phase to the phase of the one with the lowest difference from current (which is the index in the phase table)
                     }
                 }
-                
-                // double best = 0;
-                // auto best = difference_scores_from_phase_table. best = index of max of diff scores? shouldn't it be min?
-                // if (similar[best] < threshold)
             }
         }
         //whether or not the phase is stable, we need to update last phase and whatnot
@@ -157,9 +149,9 @@ void phase_detector::print_log_file(string log_file_name) {
 }
 
 
-void phase_detector::cleanup_phase_detector(string log_file_name = "phase_trace.csv") {
+void phase_detector::cleanup_phase_detector(string log_file_name = "") {
 
-    if (print_log_file_true == 1) {
+    if (log_file_name.size() > 0) {
         print_log_file(log_file_name);
     }
     init_phase_detector();

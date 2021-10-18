@@ -22,7 +22,7 @@
 
 
 // Phase detection header file
-// Version 0.8
+// Version 0.9
 
 
 #include <cstdio>
@@ -65,17 +65,13 @@ typedef int phase_id_type;
 
 typedef void (*listener_function)(phase_id_type); //listener functor type that takes in a phase ID and returns nothing
 
+typedef void (*dram_listener_function)(uint64_t, phase_id_type); //listener functor type that takes in a phase ID and returns nothing
 
-// double difference_measure_of_signatures(bitvec sig1, bitvec sig2);
-// uint64_t hash_address(bitvec sig);
-// void detect(uint64_t instruction_pointer);
-// void init_phase_detector();
 void read_file(char const log_file[], int is_binary = 1);
-// void cleanup_phase_detector();
 
 void test_listener(phase_id_type current_phase);
 void dram_phase_trace_listener(phase_id_type new_phase);
-
+void register_dram_trace_listener(dram_listener_function f);
 
 //used for reading from memtrace binary output files
 struct Binary_output_struct_type {
@@ -96,12 +92,12 @@ class phase_detector {
         bitvec current_signature;
         bitvec last_signature;
 
-        static hash<bitset<64>> hash_bitvec;
+        const static hash<bitset<64>> hash_bitvec;
         //hash<uint64_t> hash_bitvec;
 
         uint64_t instruction_count = 0;
         uint64_t stable_count = 0;
-        uint64_t stable_min = 5;
+        
         phase_id_type phase = -1;
 
         vector<bitvec> phase_table;
@@ -113,6 +109,9 @@ class phase_detector {
 
         vector<listener_function> listeners;
     public:
+
+        const uint64_t stable_min = 5;
+
         double difference_measure_of_signatures(bitvec sig1, bitvec sig2);
         uint64_t hash_address(uint64_t address);
         void detect(uint64_t instruction_pointer);
@@ -120,5 +119,4 @@ class phase_detector {
         void cleanup_phase_detector(string log_file_name);
         void register_listeners(listener_function f);
         void print_log_file(string log_file_name);
-        int print_log_file_true = 1;
 };

@@ -26,13 +26,13 @@ How to build:
 Run the "make" command in the directory model-swapping/phase with the provided Makefile. Run "make debug" to have debug symbols.
 
 This will create an executable called "phase" in the directory. Run ./phase with no arguments or with the argument "-h" or "--help" to get usage information.
-Current usage information as of v0.8:
-Usage: ./phase [OPTION] [OUTPUT FILE] [INPUT FILES]...
-Options are -t which changes input mode from binary to text (from libmemtrace)
+Current usage information as of v0.9:
+Usage: ./phase [OPTION] [INPUT FILES]...
+Options are -o [OUTPUT FILE NAME] which outputs the phase trace to the file named
 and -h or --help which displays this usage message.
 
 The phase program driver code expects inputs from the output logs of libmemtrace from DynamoRio run on whatever program you want to test.
-The default format is binary format, but there is mild support for text format.
+The default format is binary format (there was support for text format, but that's a side issue).
 
 Good luck!
 
