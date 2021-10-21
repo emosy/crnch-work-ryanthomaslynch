@@ -87,7 +87,7 @@ typedef struct Binary_output_struct_type binary_output_struct_t;
 
 
 
-class phase_detector {
+class PhaseDetector {
     private:
         bitvec current_signature;
         bitvec last_signature;

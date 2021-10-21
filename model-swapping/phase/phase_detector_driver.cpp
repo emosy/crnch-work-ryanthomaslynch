@@ -28,7 +28,7 @@
 
 using namespace std;
 
-static phase_detector detector;
+static PhaseDetector detector;
 
 
 static phase_id_type old_phase = -2;
@@ -123,7 +123,7 @@ int main(int argc, char const *argv[])
     //args format:
     // ./phase [0] -t (text, optional) [1] phase_trace_output_name [1 or 2] log_file_1 log_file_2 ...
     
-    // phase_detector detector;
+    // PhaseDetector detector;
     detector.init_phase_detector(); //probably not needed
     detector.register_listeners(dram_phase_trace_listener);
     if (argc > 1) {

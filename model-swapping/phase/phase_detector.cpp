@@ -34,14 +34,14 @@ using namespace std;
 //phase detector class defined in phase_detector.h
 
 
-double phase_detector::difference_measure_of_signatures(bitvec sig1, bitvec sig2) {
+double PhaseDetector::difference_measure_of_signatures(bitvec sig1, bitvec sig2) {
     // auto xor_signatures = sig1 ^ sig2;
     // auto or_signatures = sig1 | sig2;
     return static_cast<double>((sig1 ^ sig2).count()) / (sig1 | sig2).count(); // this should work with any compiler
     // return ((double) xor_signatures.__builtin_count()) / or_signatures.__builtin_count(); // this might only work with GCC
 }
 
-uint64_t phase_detector::hash_address(uint64_t address) {
+uint64_t PhaseDetector::hash_address(uint64_t address) {
     // auto address_minus_bottom_drop_bits = address >> drop_bits;
     // uint32_t hashed_randomized_address = hash_bitvec(address_minus_bottom_drop_bits); // minstd_rand(address_minus_bottom_drop_bits)(); //hash_bitvec(address_minus_bottom_drop_bits);
     
@@ -56,7 +56,7 @@ uint64_t phase_detector::hash_address(uint64_t address) {
     //not really a hash: hash<uint64_t>()(address_minus_bottom_drop_bits) - time test on big XS: 6.178s
 }
 
-void phase_detector::detect(uint64_t instruction_pointer) {
+void PhaseDetector::detect(uint64_t instruction_pointer) {
     current_signature[hash_address(instruction_pointer)] = 1;
     
 
@@ -112,7 +112,7 @@ void phase_detector::detect(uint64_t instruction_pointer) {
     instruction_count += 1; // should this be before or after the if?
 }
 
-void phase_detector::init_phase_detector() {
+void PhaseDetector::init_phase_detector() {
     current_signature.reset();
     last_signature.reset();
     // hash_bitvec
@@ -124,7 +124,7 @@ void phase_detector::init_phase_detector() {
     listeners.clear();
 }
 
-void phase_detector::print_log_file(string log_file_name) {
+void PhaseDetector::print_log_file(string log_file_name) {
     
     ofstream log(log_file_name);
     // for (auto p : phase_trace) {
@@ -149,7 +149,7 @@ void phase_detector::print_log_file(string log_file_name) {
 }
 
 
-void phase_detector::cleanup_phase_detector(string log_file_name = "") {
+void PhaseDetector::cleanup_phase_detector(string log_file_name = "") {
 
     if (log_file_name.size() > 0) {
         print_log_file(log_file_name);
@@ -158,6 +158,6 @@ void phase_detector::cleanup_phase_detector(string log_file_name = "") {
 
 }
 
-void phase_detector::register_listeners(listener_function f) {
+void PhaseDetector::register_listeners(listener_function f) {
     listeners.push_back(f);
 }

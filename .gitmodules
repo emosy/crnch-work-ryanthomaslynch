@@ -1,3 +1,3 @@
 [submodule "DRAMsim3"]
-	path = DRAMsim3
+	path = model-swapping/DRAMsim3
 	url = https://github.com/emosy/DRAMsim3.git
