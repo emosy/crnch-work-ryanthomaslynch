@@ -25,19 +25,56 @@
 #include <fstream>
 #include <cstdio>
 #include "./../phase/phase_detector.h"
+#include <sstream>
+#include <string>
 
 
 using namespace dramsim3;
 
-static int old_phase = -2;
-static uint64_t interval = 0;
-static std::ofstream dram_phase_trace("dram_phase_trace.csv");
+class phase_test_driver {
+
+    public:
+        void dram_phase_trace_listener(int new_phase);
+        phase_test_driver();
+        ~phase_test_driver();
 
 
+    private:
+        int old_phase = -2;
+        uint64_t interval = 0;
+        std::ofstream dram_phase_trace;
+
+};
+
+phase_test_driver::phase_test_driver() {
+    dram_phase_trace.open("dram_phase_trace.csv");
+}
+
+phase_test_driver::~phase_test_driver() {
+    dram_phase_trace.close();
+}
+
+void phase_test_driver::dram_phase_trace_listener(int new_phase) {
+    if (new_phase != old_phase) {
+        if (dram_phase_trace.good()) {
+            int64_t adjustment = 0;  // (new_phase == -1) ? 0 : detector.stable_min * -1; //if we want to back label intervals
+            // for (const auto &i: ext_dram_listeners) {
+            //     i(interval + adjustment, new_phase);
+            // }
+            // cout << interval + adjustment << "," << old_phase << endl;
+            dram_phase_trace << (interval + adjustment) << "," << new_phase << '\n';
+        } else {
+            std::cerr << "dram phase trace file not good anymore! on phase " << new_phase << std::endl;
+        }
+        old_phase = new_phase;
+    }
+    interval += 1;
+}
 
 
 
 int main(int argc, const char **argv) {
+    // using namespace std;
     args::ArgumentParser parser(
         "DRAM Simulator.",
         "Examples: \n."
@@ -51,13 +88,9 @@ int main(int argc, const char **argv) {
     args::ValueFlag<std::string> output_dir_arg(
         parser, "output_dir", "Output directory for stats files",
         {'o', "output-dir"}, ".");
-    args::ValueFlag<std::string> stream_arg(
-        parser, "stream_type", "address stream generator - (random), stream",
-        {'s', "stream"}, "");
-    args::ValueFlag<std::string> trace_file_arg(
-        parser, "trace",
-        "Trace file, setting this option will ignore -s option",
-        {'t', "trace"});
+    args::ValueFlag<std::string> input_files_arg(
+    parser, "input_files", "File containing list of input files (one on each line)",
+    {'i', "input-files"}, "input.txt");
     args::Positional<std::string> config_arg(
         parser, "config", "The config file name (mandatory)");
 
@@ -80,42 +113,59 @@ int main(int argc, const char **argv) {
 
     uint64_t cycles = args::get(num_cycles_arg);
     std::string output_dir = args::get(output_dir_arg);
-    std::string trace_file = args::get(trace_file_arg);
-    std::string stream_type = args::get(stream_arg);
+    // std::string output_dir = std::string("dram_sim_test.txt");
+    std::string input_files = args::get(input_files_arg);
 
 
 
-    CPU *cpu;
-    if (stream_type == "stream" || stream_type == "s") {
-        cpu = new StreamCPU(config_file, output_dir);
-    } else {
-        cpu = new RandomCPU(config_file, output_dir);
-    }
-
+    OnlineCPU *cpu;
+    // if (stream_type == "stream" || stream_type == "s") {
+    //     cpu = new StreamCPU(config_file, output_dir);
+    // } else {
+    //     cpu = new RandomCPU(config_file, output_dir);
+    // }
+    cpu = new OnlineCPU(config_file, output_dir);
     
     //phase detector setup
 
-    auto dram_phase_trace_listener = [&cpu](int new_phase) {
-        if (new_phase != old_phase) {
-            if (dram_phase_trace.good()) {
-                int64_t adjustment = 0;  // (new_phase == -1) ? 0 : detector.stable_min * -1; //if we want to back label intervals
-                // for (const auto &i: ext_dram_listeners) {
-                //     i(interval + adjustment, new_phase);
-                // }
-                // cout << interval + adjustment << "," << old_phase << endl;
-                dram_phase_trace << (interval + adjustment) << "," << new_phase << '\n';
-            } else {
-                std::cerr << "dram phase trace file not good anymore! on phase " << new_phase << std::endl;
-            }
-            old_phase = new_phase;
-        }
-        interval += 1;
-    };
+    
 
+    
+
+    PhaseDetector detector;
+    detector.init_phase_detector();
+
+    ifstream input_file_list_stream(input_files);
+    std::string line;
+    uint64_t fake_clock = 0;
+
+
+    detector.register_listeners(dram_phase_trace_listener);
+
+    while (std::getline(input_file_list_stream, line)) {
+        //line is the name of the current file to read from
+        ifstream in_stream;
+        in_stream.open(line);
+        binary_output_struct_t current;
+        while (in_stream.good()) {
+            in_stream.read((char*)&current, sizeof(binary_output_struct_t));
+            detector.detect(current.instruction_pointer);
+            while (true) {
+                bool canSend = cpu->canSendTransaction(current.virtual_address, current.is_write);
+                cpu->ClockTick();
+                fake_clock++;
+                if (canSend) {
+                    break;
+                }
+            }
+        }
+        in_stream.close();
+
+    }
 
 
     for (uint64_t clk = 0; clk < cycles; clk++) {
-        cpu->ClockTick();
+        
     }
     cpu->PrintStats();
 

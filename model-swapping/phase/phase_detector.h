@@ -76,7 +76,7 @@ void register_dram_trace_listener(dram_listener_function f);
 //used for reading from memtrace binary output files
 struct Binary_output_struct_type {
 
-    bool read_or_write;
+    bool is_write;
     uint64_t virtual_address;
     uint64_t size_of_access;
     uint64_t instruction_pointer;
