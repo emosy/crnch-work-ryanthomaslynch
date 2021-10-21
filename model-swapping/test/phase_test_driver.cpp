@@ -37,6 +37,7 @@ class phase_test_driver {
         void dram_phase_trace_listener(int new_phase);
         phase_test_driver();
         ~phase_test_driver();
+        OnlineCPU *my_cpu;
 
 
     private:
@@ -67,6 +68,7 @@ void phase_test_driver::dram_phase_trace_listener(int new_phase) {
             std::cerr << "dram phase trace file not good anymore! on phase " << new_phase << std::endl;
         }
         old_phase = new_phase;
+        my_cpu->ResetStats();
     }
     interval += 1;
 }
@@ -128,8 +130,9 @@ int main(int argc, const char **argv) {
     
     //phase detector setup
 
-    
+    phase_test_driver driver;
 
+    driver.my_cpu = cpu;
     
 
     PhaseDetector detector;
@@ -140,7 +143,7 @@ int main(int argc, const char **argv) {
     uint64_t fake_clock = 0;
 
 
-    detector.register_listeners(dram_phase_trace_listener);
+    detector.register_listeners(driver.dram_phase_trace_listener);
 
     while (std::getline(input_file_list_stream, line)) {
         //line is the name of the current file to read from
@@ -171,7 +174,9 @@ int main(int argc, const char **argv) {
 
     delete cpu;
 
-    dram_phase_trace.close();
+    //destructor for driver?
+
+    // dram_phase_trace.close();
 
     return 0;
 }
