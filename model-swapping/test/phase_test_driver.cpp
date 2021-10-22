@@ -43,7 +43,7 @@ void dram_phase_trace_listener(int new_phase) {
     if (new_phase != old_phase) {
         if (dram_phase_trace.good()) {
 
-            
+            //TODO: need to get the stats for the current phase here to put in the output file all together
 
             int64_t adjustment = 0;  // (new_phase == -1) ? 0 : detector.stable_min * -1; //if we want to back label intervals
             // for (const auto &i: ext_dram_listeners) {
