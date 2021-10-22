@@ -31,33 +31,20 @@
 
 using namespace dramsim3;
 
-class phase_test_driver {
-
-    public:
-        void dram_phase_trace_listener(int new_phase);
-        phase_test_driver();
-        ~phase_test_driver();
-        OnlineCPU *my_cpu;
+// static void dram_phase_trace_listener(int new_phase);
+static OnlineCPU *cpu;
 
 
-    private:
-        int old_phase = -2;
-        uint64_t interval = 0;
-        std::ofstream dram_phase_trace;
+static int old_phase = -2;
+static uint64_t interval = 0;
+static std::ofstream dram_phase_trace;
 
-};
-
-phase_test_driver::phase_test_driver() {
-    dram_phase_trace.open("dram_phase_trace.csv");
-}
-
-phase_test_driver::~phase_test_driver() {
-    dram_phase_trace.close();
-}
-
-void phase_test_driver::dram_phase_trace_listener(int new_phase) {
+void dram_phase_trace_listener(int new_phase) {
     if (new_phase != old_phase) {
         if (dram_phase_trace.good()) {
+
+            
+
             int64_t adjustment = 0;  // (new_phase == -1) ? 0 : detector.stable_min * -1; //if we want to back label intervals
             // for (const auto &i: ext_dram_listeners) {
             //     i(interval + adjustment, new_phase);
@@ -68,7 +55,7 @@ void phase_test_driver::dram_phase_trace_listener(int new_phase) {
             std::cerr << "dram phase trace file not good anymore! on phase " << new_phase << std::endl;
         }
         old_phase = new_phase;
-        my_cpu->ResetStats();
+        cpu->ResetStats();
     }
     interval += 1;
 }
@@ -76,6 +63,10 @@ void phase_test_driver::dram_phase_trace_listener(int new_phase) {
 
 
 int main(int argc, const char **argv) {
+
+    dram_phase_trace.open("dram_phase_trace.csv");
+
+    
     // using namespace std;
     args::ArgumentParser parser(
         "DRAM Simulator.",
@@ -120,7 +111,6 @@ int main(int argc, const char **argv) {
 
 
 
-    OnlineCPU *cpu;
     // if (stream_type == "stream" || stream_type == "s") {
     //     cpu = new StreamCPU(config_file, output_dir);
     // } else {
@@ -128,12 +118,7 @@ int main(int argc, const char **argv) {
     // }
     cpu = new OnlineCPU(config_file, output_dir);
     
-    //phase detector setup
-
-    phase_test_driver driver;
-
-    driver.my_cpu = cpu;
-    
+    //phase detector setup    
 
     PhaseDetector detector;
     detector.init_phase_detector();
@@ -143,7 +128,7 @@ int main(int argc, const char **argv) {
     uint64_t fake_clock = 0;
 
 
-    detector.register_listeners(driver.dram_phase_trace_listener);
+    detector.register_listeners(dram_phase_trace_listener);
 
     while (std::getline(input_file_list_stream, line)) {
         //line is the name of the current file to read from
@@ -174,9 +159,7 @@ int main(int argc, const char **argv) {
 
     delete cpu;
 
-    //destructor for driver?
-
-    // dram_phase_trace.close();
+    dram_phase_trace.close();
 
     return 0;
 }
