@@ -155,6 +155,7 @@ void test_listener(phase_id_type current_phase) {
     cout << current_phase << endl;
 }
 
+//TODO: use std::bind so i can pass self as a param and use instance methods instead of stuff
 
 void dram_phase_trace_listener(phase_id_type new_phase) {
     if (new_phase != old_phase) {
