@@ -93,8 +93,8 @@ int main(int argc, const char **argv) {
         "../DRAMsim3/configs/DDR4_8Gb_x8_3200.ini -t sample_trace.txt\n"
         "./phase_test.out ../DRAMsim3/configs/DDR4_8Gb_x8_3200.ini -s random -c 100");
     args::HelpFlag help(parser, "help", "Display the help menu", {'h', "help"});
-    args::ValueFlag<uint64_t> num_cycles_arg(parser, "num_cycles", "Number of cycles to simulate",
-        {'c', "cycles"}, 100000);
+    // args::ValueFlag<uint64_t> num_cycles_arg(parser, "num_cycles", "Number of cycles to simulate",
+    //     {'c', "cycles"}, 100000);
     args::ValueFlag<std::string> output_dir_arg(parser, "output_dir", "Output directory for stats files",
         {'o', "output-dir"}, ".");
     args::ValueFlag<std::string> input_files_arg(parser, "input_files",
@@ -121,7 +121,7 @@ int main(int argc, const char **argv) {
         return 1;
     }
 
-    uint64_t cycles = args::get(num_cycles_arg);
+    // uint64_t cycles = args::get(num_cycles_arg);
     // std::string output_dir = args::get(output_dir_arg);
     std::string output_dir = "./";
     // std::string output_dir = std::string("dram_sim_test.txt");

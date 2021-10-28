@@ -1,0 +1,8 @@
+commands to run to create traces on diskaveri
+
+xsbench -g 10 -p 500
+ ~/drroot/bin64/drrun -c ~/drroot/samples/bin64/libmemtrace_x86_binary.so -- ~/XSBench-19/openmp-threading/XSBench -g 10 -p 500
+
+
+amg 50x3
+~/drroot/bin64/drrun -c ~/drroot/samples/bin64/libmemtrace_x86_binary.so -- mpirun -np 1 ./amg -n 50 50 50
