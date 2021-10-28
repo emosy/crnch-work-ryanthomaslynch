@@ -114,7 +114,7 @@ int main(int argc, const char **argv) {
     }
 
     // std::string config_file = args::get(config_arg);
-    std::string config_file = "../DRAMsim3/configs/DDR3_8Gb_x16_1866_model_swap.ini";
+    std::string config_file = "../DRAMsim3/configs/DDR3_8Gb_x16_1866_ideal.ini";
 
     if (config_file.empty()) {
         std::cerr << parser;
@@ -158,24 +158,22 @@ int main(int argc, const char **argv) {
         ifstream in_stream;
         in_stream.open(line);
         binary_output_struct_t current;
+        bool readNext = true;
         while (in_stream.good()) {
-            in_stream.read((char*)&current, sizeof(binary_output_struct_t));
-            detector.detect(current.instruction_pointer);
-            address_to_first_seen_map[current.virtual_address] = clk;
-            while (true) {
-                bool canSend = cpu->canSendTransaction(current.virtual_address, current.is_write);
-                cpu->ClockTick();
-                clk++;
-                if (canSend) {
-                    break;
-                }
+            if (readNext) {
+                in_stream.read((char*)&current, sizeof(binary_output_struct_t));
+                detector.detect(current.instruction_pointer);
+                address_to_first_seen_map[current.virtual_address] = clk;
+                readNext = false;
             }
+            readNext = cpu->canSendTransaction(current.virtual_address, current.is_write);
+            cpu->ClockTick();
+            clk++;
             if (clk % 10000 == 0) {
-                cout << clk/10000 << endl;
+                cout << clk << endl;
             }
         }
         in_stream.close();
-
     }
 
     input_file_list_stream.close();
