@@ -170,6 +170,9 @@ int main(int argc, const char **argv) {
                     break;
                 }
             }
+            if (clk % 10000 == 0) {
+                cout << clk/10000 << endl;
+            }
         }
         in_stream.close();
 
