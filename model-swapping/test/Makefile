@@ -3,22 +3,24 @@
 CC=gcc
 CXX=g++
 
-FMT_LIB_DIR=ext/fmt/include
-INI_LIB_DIR=ext/headers
-JSON_LIB_DIR=ext/headers
-ARGS_LIB_DIR=ext/headers
+FMT_LIB_DIR=../DRAMsim3/ext/fmt/include
+INI_LIB_DIR=../DRAMsim3/ext/headers
+JSON_LIB_DIR=../DRAMsim3/ext/headers
+ARGS_LIB_DIR=../DRAMsim3/ext/headers
 
 INC=-Isrc/ -I$(FMT_LIB_DIR) -I$(INI_LIB_DIR) -I$(ARGS_LIB_DIR) -I$(JSON_LIB_DIR)
 CXXFLAGS=-Wall -O3 -fPIC -std=c++11 $(INC) -DFMT_HEADER_ONLY=1
 
 LIB_NAME=libdramsim3.so
-EXE_NAME=dramsim3main.out
+EXE_NAME=phase_test.out
 
-SRCS = src/bankstate.cc src/channel_state.cc src/command_queue.cc src/common.cc \
-		src/configuration.cc src/controller.cc src/dram_system.cc src/hmc.cc \
-		src/memory_system.cc src/refresh.cc src/simple_stats.cc src/timing.cc
+SRCS = ../DRAMsim3/src/bankstate.cc ../DRAMsim3/src/channel_state.cc ../DRAMsim3/src/command_queue.cc \
+		../DRAMsim3/src/common.cc ../DRAMsim3/src/configuration.cc ../DRAMsim3/src/controller.cc \
+		../DRAMsim3/src/dram_system.cc ../DRAMsim3/src/hmc.cc ../DRAMsim3/src/memory_system.cc \
+		../DRAMsim3/src/refresh.cc ../DRAMsim3/src/simple_stats.cc ../DRAMsim3/src/timing.cc \
+		../phase/phase_detector.cpp
 
-EXE_SRCS = src/cpu.cc src/main.cc
+EXE_SRCS = ../DRAMsim3/src/cpu.cc phase_test_driver.cpp
 
 OBJECTS = $(addsuffix .o, $(basename $(SRCS)))
 EXE_OBJS = $(addsuffix .o, $(basename $(EXE_SRCS)))

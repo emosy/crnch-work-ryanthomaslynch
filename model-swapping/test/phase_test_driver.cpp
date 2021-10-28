@@ -74,7 +74,7 @@ void dram_phase_trace_listener(int new_phase) {
 }
 
 void dramsim_transaction_callback_listener(uint64_t addr) {
-    if (address_to_first_seen_map.contains(addr)) {
+    if (address_to_first_seen_map.count(addr)) {
         uint64_t latency = clk - address_to_first_seen_map[addr];
         address_to_first_seen_map.erase(addr);
         current_phase_num_transactions++;
@@ -88,11 +88,10 @@ int main(int argc, const char **argv) {
 
     dram_phase_trace.open("dram_phase_trace.csv");
 
-    
-    // using namespace std;
-    args::ArgumentParser parser(
-        "DRAM Simulator.", "Examples: \n./build/dramsim3main configs/DDR4_8Gb_x8_3200.ini -c 100 -t sample_trace.txt\n"
-        "./build/dramsim3main configs/DDR4_8Gb_x8_3200.ini -s random -c 100");
+        args::ArgumentParser parser(
+        "DRAMsim3 tester for phase detection and stats.", "Examples: \n./phase_test.out "
+        "../DRAMsim3/configs/DDR4_8Gb_x8_3200.ini -t sample_trace.txt\n"
+        "./phase_test.out ../DRAMsim3/configs/DDR4_8Gb_x8_3200.ini -s random -c 100");
     args::HelpFlag help(parser, "help", "Display the help menu", {'h', "help"});
     args::ValueFlag<uint64_t> num_cycles_arg(parser, "num_cycles", "Number of cycles to simulate",
         {'c', "cycles"}, 100000);
