@@ -11,6 +11,8 @@ ARGS_LIB_DIR=../DRAMsim3/ext/headers
 INC=-Isrc/ -I$(FMT_LIB_DIR) -I$(INI_LIB_DIR) -I$(ARGS_LIB_DIR) -I$(JSON_LIB_DIR)
 CXXFLAGS=-Wall -O3 -fPIC -std=c++11 $(INC) -DFMT_HEADER_ONLY=1
 
+CXXFLAGS_DEBUG = -Wall -ggdb -g -O0 -fPIC -std=c++11 $(INC) -DFMT_HEADER_ONLY=1
+
 LIB_NAME=libdramsim3.so
 EXE_NAME=phase_test.out
 
@@ -30,16 +32,27 @@ EXE_OBJS := $(EXE_OBJS) $(OBJECTS)
 all: $(LIB_NAME) $(EXE_NAME)
 
 $(EXE_NAME): $(EXE_OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS_DEBUG) -o $@ $^
 
 $(LIB_NAME): $(OBJECTS)
-	$(CXX) -g -shared -Wl,-soname,$@ -o $@ $^
+	$(CXX) -g -ggdb -shared -Wl,-soname,$@ -o $@ $^
 
 %.o : %.cc
-	$(CXX)  $(CXXFLAGS) -o $@ -c $<
+	$(CXX)  $(CXXFLAGS) -g -ggdb -o $@ -c $<
+
+%.o : %.cpp
+	$(CXX)  $(CXXFLAGS) -g -ggdb -o $@ -c $<
 
 %.o : %.c
-	$(CC) -fPIC -O2 -o $@ -c $<
+	$(CC) -g -ggdb -fPIC -O0 -o $@ -c $<
 
 clean:
 	-rm -f $(EXE_OBJS) $(LIB_NAME) $(EXE_NAME)
+	
+# debug: $(LIB_NAME_DEBUG) $(EXE_NAME_DEBUG)
+
+# $(EXE_NAME_DEBUG): $(EXE_OBJS)
+# 	$(CXX) $(CXXFLAGS_DEBUG) -o $@ $^
+	
+# $(LIB_NAME_DEBUG): $(OBJECTS)
+# 	$(CXX) -g -shared -Wl,-soname,$@ -o $@ $^

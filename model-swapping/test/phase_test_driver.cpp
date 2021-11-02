@@ -114,7 +114,8 @@ int main(int argc, const char **argv) {
     }
 
     // std::string config_file = args::get(config_arg);
-    std::string config_file = "../DRAMsim3/configs/DDR3_8Gb_x16_1866_ideal.ini";
+    // std::string config_file = "../DRAMsim3/configs/DDR3_8Gb_x16_1866_ideal.ini";
+    std::string config_file = "../DRAMsim3/configs/DDR3_8Gb_x16_1866_model_swap.ini";
 
     if (config_file.empty()) {
         std::cerr << parser;
@@ -171,6 +172,9 @@ int main(int argc, const char **argv) {
             clk++;
             if (clk % 10000 == 0) {
                 cout << clk << endl;
+                if (readNext) {
+                    cout << "READ NEXT!" << endl;
+                }
             }
         }
         in_stream.close();
