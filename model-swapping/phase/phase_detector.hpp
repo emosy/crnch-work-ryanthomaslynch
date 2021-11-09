@@ -98,7 +98,7 @@ class PhaseDetector {
         bitvec current_signature;
         bitvec last_signature;
 
-        static const hash<bitset<64>> hash_bitvec;
+        // static hash<bitset<64>> hash_bitvec();
         //hash<uint64_t> hash_bitvec;
 
         uint64_t instruction_count = 0;

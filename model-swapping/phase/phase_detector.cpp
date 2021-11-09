@@ -49,7 +49,7 @@ uint64_t PhaseDetector::hash_address(uint64_t address) {
     //drop the bottom {drop_bits} bits of the signature
     //hash it then return the top {log2_signature_len} bits of the hash (the number of bits determined by the length of the signature)
     //use this to then index into a bitvec that represents the current signature to set a specific bit to 1
-    return ((uint32_t) hash_bitvec(address >> phase_detector_constants::drop_bits)) >> (32 /*sizeof(uint32_t)*/ /* likely 32 if 32-bit MT or 64 if 64-bit MT or other hash */ - phase_detector_constants::log2_signature_len);
+    return ((uint32_t) std::hash<bitset<64>>{}(address >> phase_detector_constants::drop_bits)) >> (32 /*sizeof(uint32_t)*/ /* likely 32 if 32-bit MT or 64 if 64-bit MT or other hash */ - phase_detector_constants::log2_signature_len);
     // return hashed_randomized_address >> (32 /*sizeof(uint32_t)*/ /* likely 32 if 32-bit MT or 64 if 64-bit MT or other hash */ - log2_signature_len);
     
     //old: hash<bitset<1024>>()(address_minus_bottom_drop_bits) - time test on big XS: 18.539s
