@@ -49,7 +49,7 @@ uint64_t PhaseDetector::hash_address(uint64_t address) {
     //drop the bottom {drop_bits} bits of the signature
     //hash it then return the top {log2_signature_len} bits of the hash (the number of bits determined by the length of the signature)
     //use this to then index into a bitvec that represents the current signature to set a specific bit to 1
-    return ((uint32_t) hash_bitvec(address >> drop_bits)) >> (32 /*sizeof(uint32_t)*/ /* likely 32 if 32-bit MT or 64 if 64-bit MT or other hash */ - log2_signature_len);
+    return ((uint32_t) hash_bitvec(address >> phase_detector_constants::drop_bits)) >> (32 /*sizeof(uint32_t)*/ /* likely 32 if 32-bit MT or 64 if 64-bit MT or other hash */ - phase_detector_constants::log2_signature_len);
     // return hashed_randomized_address >> (32 /*sizeof(uint32_t)*/ /* likely 32 if 32-bit MT or 64 if 64-bit MT or other hash */ - log2_signature_len);
     
     //old: hash<bitset<1024>>()(address_minus_bottom_drop_bits) - time test on big XS: 18.539s
@@ -61,11 +61,11 @@ void PhaseDetector::detect(uint64_t instruction_pointer) {
     current_signature[hash_address(instruction_pointer)] = 1;
     
 
-    if (instruction_count % interval_len == 0) {
+    if (instruction_count % phase_detector_constants::interval_len == 0) {
         // we are on a boundary! determine phase and notify listeners
 
         //first, check if the phase is stable since the difference measure is acceptably low
-        if (difference_measure_of_signatures(current_signature, last_signature) < threshold) {
+        if (difference_measure_of_signatures(current_signature, last_signature) < phase_detector_constants::threshold) {
             stable_count += 1;
             if (stable_count >= stable_min && phase == -1) {
                 //add the current signature to the phase table and make the phase #/phase id to its index
@@ -80,12 +80,12 @@ void PhaseDetector::detect(uint64_t instruction_pointer) {
 
             //see if we've entered a phase we have seen before
             if (!phase_table.empty()) { //line 201 python
-                double best_diff = threshold; 
+                double best_diff = phase_detector_constants::threshold; 
                 for (auto phase_table_iterator = phase_table.begin(); phase_table_iterator != phase_table.end(); phase_table_iterator++) {
                     const auto s = *phase_table_iterator;
                     const auto diff = difference_measure_of_signatures(current_signature, s);
                     // difference_scores_from_phase_table.push_back(diff);
-                    if (diff < threshold && diff < best_diff) {
+                    if (diff < phase_detector_constants::threshold && diff < best_diff) {
                         phase = std::distance(phase_table.begin(), phase_table_iterator);
                         best_diff = diff;
                         //set current phase to the phase of the one with the lowest difference from current (which is the index in the phase table)
@@ -133,7 +133,7 @@ void PhaseDetector::print_log_file(string log_file_name) {
         // cout << p << endl;
         auto p = phase_trace[index];
         if (log.is_open()) {
-            log << index * interval_len << "," << p << '\n';
+            log << index * phase_detector_constants::interval_len << "," << p << '\n';
         }
     }
     log.close();
@@ -162,8 +162,3 @@ void PhaseDetector::cleanup_phase_detector(string log_file_name = "") {
 void PhaseDetector::register_listeners(listener_function f) {
     listeners.push_back(f);
 }
-
-
-
-
-//

@@ -53,15 +53,21 @@ using namespace std;
 // const int log2_signature_len = 10; // should be log 2 of the above value
 // int drop_bits = 3;
 
-#define threshold 0.5
-#define interval_len 10000
-#define signature_len 1024
-#define log2_signature_len 10
-#define drop_bits 3
-#define DEBUG 0
+// #define threshold 0.5
+// #define interval_len 10000
+// #define signature_len 1024
+// #define log2_signature_len 10
+// #define drop_bits 3
 
+namespace phase_detector_constants {
+    constexpr double threshold = 0.5;
+    constexpr uint64_t interval_len = 10000;
+    constexpr uint signature_len = 1024;
+    constexpr uint log2_signature_len = 10;
+    constexpr uint drop_bits = 3;
+}
 
-using bitvec = bitset<signature_len>;
+using bitvec = bitset<phase_detector_constants::signature_len>;
 
 typedef int phase_id_type;
 
@@ -87,14 +93,12 @@ struct Binary_output_struct_type {
 
 typedef struct Binary_output_struct_type binary_output_struct_t;
 
-
-
 class PhaseDetector {
     private:
         bitvec current_signature;
         bitvec last_signature;
 
-        hash<bitset<64>> hash_bitvec;
+        static const hash<bitset<64>> hash_bitvec;
         //hash<uint64_t> hash_bitvec;
 
         uint64_t instruction_count = 0;
