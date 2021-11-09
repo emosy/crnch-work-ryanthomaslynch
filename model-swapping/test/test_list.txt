@@ -1,0 +1,4 @@
+/home/ryan/crnch-work-ryanthomaslynch/model-swapping/phase/memtrace.XSBench.50519.0000.log
+/home/ryan/crnch-work-ryanthomaslynch/model-swapping/phase/memtrace.XSBench.50519.0001.log
+/home/ryan/crnch-work-ryanthomaslynch/model-swapping/phase/memtrace.XSBench.50519.0002.log
+/home/ryan/crnch-work-ryanthomaslynch/model-swapping/phase/memtrace.XSBench.50519.0003.log

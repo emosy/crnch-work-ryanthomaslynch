@@ -24,6 +24,8 @@
 // Phase detection header file
 // Version 0.9
 
+#ifndef PHASE_DETECTOR_H
+#define PHASE_DETECTOR_H
 
 #include <cstdio>
 #include <cinttypes>
@@ -92,7 +94,7 @@ class PhaseDetector {
         bitvec current_signature;
         bitvec last_signature;
 
-        const static hash<bitset<64>> hash_bitvec;
+        hash<bitset<64>> hash_bitvec;
         //hash<uint64_t> hash_bitvec;
 
         uint64_t instruction_count = 0;
@@ -120,3 +122,5 @@ class PhaseDetector {
         void register_listeners(listener_function f);
         void print_log_file(string log_file_name);
 };
+
+#endif

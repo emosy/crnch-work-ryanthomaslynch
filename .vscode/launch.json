@@ -5,6 +5,52 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "(gdb) Pipe Attach",
+            "type": "cppdbg",
+            "request": "attach",
+            "program": "/home/rlynch34/crnch-work-ryanthomaslynch/model-swapping/test/phase_test.out",
+            "processId": "${command:pickRemoteProcess}",
+            "pipeTransport": {
+                "debuggerPath": "/usr/bin/gdb",
+                "pipeProgram": "/usr/bin/sshpass",
+                "pipeArgs": ["-p", "changeme", "ssh", "diskaveri"],
+                "pipeCwd": ""
+            },
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "gdb launch diskaveri",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/rlynch34/crnch-work-ryanthomaslynch/model-swapping/test/phase_test.out",
+            "args": ["-i", "xsb_list.txt"],
+            "stopAtEntry": true,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "pipeTransport": {
+                "debuggerPath": "/usr/bin/gdb",
+                "pipeProgram": "/usr/bin/sshpass",
+                "pipeArgs": ["-p", "changeme", "ssh", "diskaveri"],
+                "pipeCwd": ""
+            },
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "name": "attach gdb - phase_test",
             "type": "cppdbg",
             "request": "attach",

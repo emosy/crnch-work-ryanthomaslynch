@@ -27,7 +27,7 @@
 // Phase detection code
 // Version 0.9
 
-#include "phase_detector.h"
+#include "phase_detector.hpp"
 
 using namespace std;
 
@@ -41,6 +41,7 @@ double PhaseDetector::difference_measure_of_signatures(bitvec sig1, bitvec sig2)
     // return ((double) xor_signatures.__builtin_count()) / or_signatures.__builtin_count(); // this might only work with GCC
 }
 
+//hashes the address of the current phase detector
 uint64_t PhaseDetector::hash_address(uint64_t address) {
     // auto address_minus_bottom_drop_bits = address >> drop_bits;
     // uint32_t hashed_randomized_address = hash_bitvec(address_minus_bottom_drop_bits); // minstd_rand(address_minus_bottom_drop_bits)(); //hash_bitvec(address_minus_bottom_drop_bits);
@@ -161,3 +162,8 @@ void PhaseDetector::cleanup_phase_detector(string log_file_name = "") {
 void PhaseDetector::register_listeners(listener_function f) {
     listeners.push_back(f);
 }
+
+
+
+
+//

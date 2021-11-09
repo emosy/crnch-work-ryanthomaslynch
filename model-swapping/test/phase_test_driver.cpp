@@ -24,7 +24,7 @@
 #include "./../DRAMsim3/src/cpu.h"
 #include <fstream>
 #include <cstdio>
-#include "./../phase/phase_detector.h"
+#include "./../phase/phase_detector.hpp"
 #include <sstream>
 #include <string>
 #include <map>
@@ -170,11 +170,13 @@ int main(int argc, const char **argv) {
             readNext = cpu->canSendTransaction(current.virtual_address, current.is_write);
             cpu->ClockTick();
             clk++;
+            if (readNext) {
+                cout << "READ NEXT!" << endl;
+            } else {
+                cout << "did not read next" << endl;
+            }
             if (clk % 10000 == 0) {
                 cout << clk << endl;
-                if (readNext) {
-                    cout << "READ NEXT!" << endl;
-                }
             }
         }
         in_stream.close();
