@@ -52,21 +52,21 @@ void read_file(char const log_file[], bool is_binary /*= 1*/) {
         binary_output_struct_t current;
         // uint64_t address_ip = 0;
         
-        auto detector_detect = std::bind(&PhaseDetector::detect, &detector, std::placeholders::_1);
-        auto detector_va_detect = std::bind(&PhaseDetector::detect, &detector_va, std::placeholders::_1);
+        // auto detector_detect = std::bind(&PhaseDetector::detect, &detector, std::placeholders::_1);
+        // auto detector_va_detect = std::bind(&PhaseDetector::detect, &detector_va, std::placeholders::_1);
 
 
         while (in_stream.good()) {
             
             in_stream.read((char*)&current, sizeof(binary_output_struct_t));
 
-            std::thread t1(detector_detect, current.instruction_pointer);
-            std::thread t2(detector_va_detect, current.virtual_address);
+            // std::thread t1(detector_detect, current.instruction_pointer);
+            // std::thread t2(detector_va_detect, current.virtual_address);
 
-            t1.join();
-            t2.join();
-            // detector.detect(current.instruction_pointer);
-            // detector_va.detect(current.virtual_address);
+            // t1.join();
+            // t2.join();
+            detector.detect(current.instruction_pointer);
+            detector_va.detect(current.virtual_address);
 
         }
 
