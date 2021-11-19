@@ -24,11 +24,14 @@
 // Phase detection driver code
 // Version 0.9
 
-#include "phase_detector.h"
+#include "phase_detector.hpp"
+#include <thread>
+#include <functional>
 
 using namespace std;
 
 static PhaseDetector detector;
+static PhaseDetector detector_va;
 
 
 static phase_id_type old_phase = -2;
@@ -39,9 +42,9 @@ static ofstream dram_phase_trace("dram_phase_trace.csv");
 vector<dram_listener_function> ext_dram_listeners;
 
 
-void read_file(char const log_file[], int is_binary /*= 1*/) {
+void read_file(char const log_file[], bool is_binary /*= 1*/) {
     
-    if (is_binary == 1) {
+    if (is_binary) {
         // cout << "binary test!!!" << endl << endl;
 
         ifstream in_stream;
@@ -49,10 +52,21 @@ void read_file(char const log_file[], int is_binary /*= 1*/) {
         binary_output_struct_t current;
         // uint64_t address_ip = 0;
         
+        auto detector_detect = std::bind(&PhaseDetector::detect, &detector, std::placeholders::_1);
+        auto detector_va_detect = std::bind(&PhaseDetector::detect, &detector_va, std::placeholders::_1);
+
+
         while (in_stream.good()) {
             
             in_stream.read((char*)&current, sizeof(binary_output_struct_t));
-            detector.detect(current.instruction_pointer);
+
+            std::thread t1(detector_detect, current.instruction_pointer);
+            std::thread t2(detector_va_detect, current.virtual_address);
+
+            t1.join();
+            t2.join();
+            // detector.detect(current.instruction_pointer);
+            // detector_va.detect(current.virtual_address);
 
         }
 
@@ -125,26 +139,34 @@ int main(int argc, char const *argv[])
     
     // PhaseDetector detector;
     detector.init_phase_detector(); //probably not needed
-    detector.register_listeners(dram_phase_trace_listener);
+    // detector.register_listeners(dram_phase_trace_listener);
+
+    detector_va.init_phase_detector();
+    // detector_va.register_listeners(dram_phase_trace_listener);
+
+    // detector.register_listeners(test_listener);
+    // detector_va.register_listeners(test_listener);
     if (argc > 1) {
-        int is_binary = 1;
-        int arg_index = 2;
-        bool output_phase_trace = false;
-        string phase_trace_output_name;
-        if ( string(argv[1]) == "-o") {
-            output_phase_trace = true;
-            phase_trace_output_name = string(argv[2]);
-            arg_index = 3;
-        }
-        if ( string(argv[1]) == "-t") { //alternate: strcmp(argv[1], "hello") == 0
-            is_binary = 0;
-            arg_index = 3;
-        }
+        bool is_binary = true;
+        int arg_index = 1;
+        // bool output_phase_trace = true;
+        string phase_trace_output_name = "xsb_ip_test.csv";
+        string phase_trace_output_name_va = "xsb_va_test.csv";
+        // if ( string(argv[1]) == "-o") {
+        //     output_phase_trace = true;
+        //     phase_trace_output_name = string(argv[2]);
+        //     arg_index = 3;
+        // }
+        // if ( string(argv[1]) == "-t") { //alternate: strcmp(argv[1], "hello") == 0
+        //     is_binary = 0;
+        //     arg_index = 3;
+        // }
         while (arg_index < argc) {
             read_file(argv[arg_index], is_binary);
             arg_index++;
         }
         detector.cleanup_phase_detector(phase_trace_output_name);
+        detector_va.cleanup_phase_detector(phase_trace_output_name_va);
     }
     dram_phase_trace.close();
     return 0;

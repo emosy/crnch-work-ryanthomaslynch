@@ -4,6 +4,50 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+    {
+        "name": "(gdb) Pipe Attach 2",
+        "type": "cppdbg",
+        "request": "attach",
+        "program": "/home/rlynch34/crnch-work-ryanthomaslynch/model-swapping/test/phase_test.out",
+        "processId": "${command:pickRemoteProcess}",
+        "pipeTransport": {
+            "debuggerPath": "/usr/bin/gdb",
+            "pipeProgram": "/usr/bin/sshpass",
+            "pipeArgs": ["-p", "changeme", "ssh", "diskaveri"],
+            "pipeCwd": ""
+        },
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }
+        ]
+    },
+        {
+            "name": "test",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/ryan/crnch-work-ryanthomaslynch/model-swapping/test/phase_test.out",
+            "args": ["-i", "test_list.txt"],
+            "stopAtEntry": true,
+            "cwd": "/home/ryan/crnch-work-ryanthomaslynch/model-swapping/test/",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            // "miDebuggerArgs": "-i test_list.txt",
+            // "debugServerArgs": "-i test_list.txt",
+            "setupCommands": [
+                {
+                    "-i": "test_list.txt",
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb",
+        },
         {
             "name": "(gdb) Pipe Attach",
             "type": "cppdbg",
@@ -54,7 +98,9 @@
             "name": "attach gdb - phase_test",
             "type": "cppdbg",
             "request": "attach",
-            "program": "${workspaceFolder}/model-swapping/test/phase_test.out",
+            "program": "/home/ryan/crnch-work-ryanthomaslynch/model-swapping/test/phase_test.out",
+            "cwd": "/home/ryan/crnch-work-ryanthomaslynch/model-swapping/test/",
+            "args": ["-i", "test_list.txt"],
             "processId": "${command:pickProcess}",
             "MIMode": "gdb",
             "setupCommands": [
@@ -66,13 +112,13 @@
             ]
         },
         {
-            "name": "g++ - Build and debug active file",
+            "name": "DEBUG",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "program": "/home/ryan/crnch-work-ryanthomaslynch/model-swapping/test/phase_test.out",
+            "args": ["-i", "test_list.txt"],
+            "stopAtEntry": true,
+            "cwd": "/home/ryan/crnch-work-ryanthomaslynch/model-swapping/test/",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -83,7 +129,6 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "C/C++: g++ build active file",
             "miDebuggerPath": "/usr/bin/gdb"
         }
     ]
