@@ -1,0 +1,35 @@
+Here's the steps I used to install scarphase:
+
+1. run "git clone https://github.com/uart/scarphase.git" in the directory you want the scarphase/ folder in
+2. run "cd scarphase" then "git submodule update --init --recursive"
+2. install dependencies - try "sudo apt install cmake doxygen libunwind-dev autoconf automake libtool curl make g++ unzip"
+3. install protobuf - see below
+4. install boost - see below
+5. install python 3 - try "sudo apt install python3-pip"
+6. install python packages - try "pip install scipy scikit-learn matplotlib prettytable progressbar numpy"
+7. now, you can cd into scarphase and run "cmake ." then "make"
+make might throw some warnings, but it should still compile and say [100%] at the end
+
+
+how to install protobuf
+1. change into the directory where you want the protobuf/ folder in
+2. run "git clone https://github.com/protocolbuffers/protobuf.git"
+3. cd into protobuf then run "git submodule update --init --recursive"
+4. then run "./autogen.sh"
+5. then run "./configure" then "make -j$(nproc)" then "make check" then "sudo make install" and "sudo ldconfig"
+6. restart bash by running "bash"
+7. test by trying to run "protoc" - should print out some help info
+
+instructions on protobuf from https://github.com/protocolbuffers/protobuf/blob/master/src/README.md
+
+how to install boost
+1. run "wget -c https://boostorg.jfrog.io/artifactory/main/release/1.77.0/source/boost_1_77_0.tar.gz"
+2. run "tar -xvf boost_1_77_0.tar.gz -C boost" to extract boost into a folder named "boost"
+3. cd into boost then run " ./bootstrap.sh --with-libraries=program_options"
+4. figure out your user directory which should be like /home/username (same as when you "cd ~" and run "pwd")
+then run "./b2 install --prefix=/home/username/.boost"
+5. add boost to your path by running "echo 'export PATH=/home/username/.boost/bin:$PATH' >> ~/.bashrc"
+5. restart bash by running "bash"
+6. test by trying to run "b2 --help" - should print out some help info
+
+instructions on boost from https://www.boost.org/doc/libs/1_78_0/more/getting_started/unix-variants.html
