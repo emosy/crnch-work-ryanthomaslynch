@@ -4,3 +4,5 @@ model-swapping/phase/phase
 *.so
 *.o
 *.out
+*.log
+*.diff
