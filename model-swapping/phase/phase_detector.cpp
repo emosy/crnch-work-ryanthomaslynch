@@ -60,8 +60,12 @@ uint64_t PhaseDetector::hash_address(uint64_t address) {
 void PhaseDetector::detect(uint64_t instruction_pointer) {
     current_signature[hash_address(instruction_pointer)] = 1;
     
+    increment_instruction_count();
+}
 
-    if (instruction_count % phase_detector_constants::interval_len == 0) {
+
+void PhaseDetector::increment_instruction_count() {
+if (instruction_count % phase_detector_constants::interval_len == 0) {
         // we are on a boundary! determine phase and notify listeners
 
         //first, check if the phase is stable since the difference measure is acceptably low
@@ -110,7 +114,8 @@ void PhaseDetector::detect(uint64_t instruction_pointer) {
         //TODO: add addr info to phase, dwarf map?
 
     }
-    instruction_count += 1; // should this be before or after the if?
+    instruction_count += 1; 
+    
 }
 
 void PhaseDetector::init_phase_detector() {

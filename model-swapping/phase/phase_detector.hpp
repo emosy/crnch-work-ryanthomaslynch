@@ -82,7 +82,7 @@ void dram_phase_trace_listener(phase_id_type new_phase);
 void register_dram_trace_listener(dram_listener_function f);
 
 //used for reading from memtrace binary output files
-struct Binary_output_struct_type {
+struct _binary_output_x86_memtrace_struct_t {
 
     bool is_write;
     uint64_t virtual_address;
@@ -91,7 +91,20 @@ struct Binary_output_struct_type {
 
 };
 
-typedef struct Binary_output_struct_type binary_output_struct_t;
+typedef struct _binary_output_x86_memtrace_struct_t binary_output_x86_memtrace_struct_t;
+
+
+
+//format used for my new simplified/combined approach
+
+struct _simple_ins_ref_t {
+    unsigned char* pc;
+    int opcode;
+    int is_memory_ref;
+    int is_cond_branch;
+};
+
+typedef struct _simple_ins_ref_t simple_ins_ref_t;
 
 class PhaseDetector {
     private:
@@ -125,6 +138,8 @@ class PhaseDetector {
         void cleanup_phase_detector(string log_file_name);
         void register_listeners(listener_function f);
         void print_log_file(string log_file_name);
+
+        void increment_instruction_count();
 };
 
 #endif

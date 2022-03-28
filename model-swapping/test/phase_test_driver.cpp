@@ -158,11 +158,11 @@ int main(int argc, const char **argv) {
         //line is the name of the current file to read from
         ifstream in_stream;
         in_stream.open(line);
-        binary_output_struct_t current;
+        binary_output_x86_memtrace_struct_t current;
         bool readNext = true;
         while (in_stream.good()) {
             if (readNext) {
-                in_stream.read((char*)&current, sizeof(binary_output_struct_t));
+                in_stream.read((char*)&current, sizeof(binary_output_x86_memtrace_struct_t));
                 detector.detect(current.instruction_pointer);
                 address_to_first_seen_map[current.virtual_address] = clk;
                 readNext = false;

@@ -30,8 +30,9 @@
 
 using namespace std;
 
-static PhaseDetector detector;
-static PhaseDetector detector_va;
+static PhaseDetector detector_all;
+static PhaseDetector detector_mem;
+static PhaseDetector detector_cbr;
 
 
 static phase_id_type old_phase = -2;
@@ -44,12 +45,15 @@ vector<dram_listener_function> ext_dram_listeners;
 
 void read_file(char const log_file[], bool is_binary /*= 1*/) {
     
-    if (is_binary) {
-        // cout << "binary test!!!" << endl << endl;
+
+    int is_ryan_simple_format = 1;
+
+    if (is_ryan_simple_format == 1) {
+
 
         ifstream in_stream;
         in_stream.open(log_file);
-        binary_output_struct_t current;
+        simple_ins_ref_t current;
         // uint64_t address_ip = 0;
         
         // auto detector_detect = std::bind(&PhaseDetector::detect, &detector, std::placeholders::_1);
@@ -58,15 +62,51 @@ void read_file(char const log_file[], bool is_binary /*= 1*/) {
 
         while (in_stream.good()) {
             
-            in_stream.read((char*)&current, sizeof(binary_output_struct_t));
+            in_stream.read((char*)&current, sizeof(simple_ins_ref_t));
 
             // std::thread t1(detector_detect, current.instruction_pointer);
             // std::thread t2(detector_va_detect, current.virtual_address);
 
             // t1.join();
             // t2.join();
-            detector.detect(current.instruction_pointer);
-            detector_va.detect(current.virtual_address);
+            if (current.is_cond_branch != 0) {
+                detector_cbr.detect((uint64_t)current.pc);
+            }
+            else {
+                detector_cbr.increment_instruction_count();
+            }
+            if (current.is_memory_ref != 0) {
+                detector_mem.detect((uint64_t)current.pc);
+            }
+            else {
+                detector_mem.increment_instruction_count();
+            }
+            detector_all.detect((uint64_t)current.pc);
+        }
+
+    } else if (is_binary) {
+        // cout << "binary test!!!" << endl << endl;
+
+        ifstream in_stream;
+        in_stream.open(log_file);
+        binary_output_x86_memtrace_struct_t current;
+        // uint64_t address_ip = 0;
+        
+        // auto detector_detect = std::bind(&PhaseDetector::detect, &detector, std::placeholders::_1);
+        // auto detector_va_detect = std::bind(&PhaseDetector::detect, &detector_va, std::placeholders::_1);
+
+
+        while (in_stream.good()) {
+            
+            in_stream.read((char*)&current, sizeof(binary_output_x86_memtrace_struct_t));
+
+            // std::thread t1(detector_detect, current.instruction_pointer);
+            // std::thread t2(detector_va_detect, current.virtual_address);
+
+            // t1.join();
+            // t2.join();
+            // detector.detect(current.instruction_pointer);
+            // detector_va.detect(current.virtual_address);
 
         }
 
@@ -128,9 +168,12 @@ void read_file(char const log_file[], bool is_binary /*= 1*/) {
 int main(int argc, char const *argv[])
 {
     if (argc == 1 or (argc == 2 and (string(argv[1]) == "-h" or string(argv[1]) == "--help"))) {
-        cout << "Usage: ./phase [OPTION] [INPUT FILES]...\n" <<
+        cout << "Usage: ./phase [OPTION] [FILE WITH LIST OF INPUT FILES]...\n" <<
         "Options are -o [OUTPUT FILE NAME] which outputs the phase trace to the file named\n" <<
-        "and -h or --help which displays this usage message." << endl;
+        "and -h or --help which displays this usage message." <<
+        "The file passed in after options should be a plain text file with each line containing\n" <<
+        "the name of a file to be processed." <<
+        "NOTE: Options are currently disabled." << endl;
         return 0;
     }
 
@@ -138,10 +181,11 @@ int main(int argc, char const *argv[])
     // ./phase [0] -t (text, optional) [1] phase_trace_output_name [1 or 2] log_file_1 log_file_2 ...
     
     // PhaseDetector detector;
-    detector.init_phase_detector(); //probably not needed
+    detector_all.init_phase_detector(); //probably not needed
     // detector.register_listeners(dram_phase_trace_listener);
 
-    detector_va.init_phase_detector();
+    detector_mem.init_phase_detector();
+    detector_cbr.init_phase_detector();
     // detector_va.register_listeners(dram_phase_trace_listener);
 
     // detector.register_listeners(test_listener);
@@ -150,8 +194,9 @@ int main(int argc, char const *argv[])
         bool is_binary = true;
         int arg_index = 1;
         // bool output_phase_trace = true;
-        string phase_trace_output_name = "xsb_ip_test.csv";
-        string phase_trace_output_name_va = "xsb_va_test.csv";
+        string phase_trace_output_name_all = "xsb_all_test.csv";
+        string phase_trace_output_name_mem = "xsb_mem_test.csv";
+        string phase_trace_output_name_cbr = "xsb_cbr_test.csv";
         // if ( string(argv[1]) == "-o") {
         //     output_phase_trace = true;
         //     phase_trace_output_name = string(argv[2]);
@@ -161,12 +206,25 @@ int main(int argc, char const *argv[])
         //     is_binary = 0;
         //     arg_index = 3;
         // }
-        while (arg_index < argc) {
-            read_file(argv[arg_index], is_binary);
-            arg_index++;
+        // while (arg_index < argc) {
+        //     read_file(argv[arg_index], is_binary);
+        //     arg_index++;
+        // }
+
+
+        std::string input_files = argv[arg_index];
+        ifstream input_file_list_stream(input_files);
+        std::string line;
+        //loop through the list of log files and call read_file on each one
+        while (std::getline(input_file_list_stream, line)) {
+            const char* log_file = line.c_str();
+            read_file(log_file, is_binary);
         }
-        detector.cleanup_phase_detector(phase_trace_output_name);
-        detector_va.cleanup_phase_detector(phase_trace_output_name_va);
+
+
+        detector_all.cleanup_phase_detector(phase_trace_output_name_all);
+        detector_mem.cleanup_phase_detector(phase_trace_output_name_mem);
+        detector_cbr.cleanup_phase_detector(phase_trace_output_name_cbr);
     }
     dram_phase_trace.close();
     return 0;
