@@ -1,0 +1,4 @@
+/home/ryan/crnch-work-ryanthomaslynch/model-swapping/phase/instrace.XSBench.166515.0000.log
+/home/ryan/crnch-work-ryanthomaslynch/model-swapping/phase/instrace.XSBench.166515.0001.log
+/home/ryan/crnch-work-ryanthomaslynch/model-swapping/phase/instrace.XSBench.166515.0002.log
+/home/ryan/crnch-work-ryanthomaslynch/model-swapping/phase/instrace.XSBench.166515.0003.log
