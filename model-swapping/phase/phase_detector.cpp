@@ -138,7 +138,7 @@ void PhaseDetector::print_log_file(string log_file_name) {
         // cout << p << endl;
         auto p = phase_trace[index];
         if (log.is_open()) {
-            log << index * phase_detector_constants::interval_len << "," << p << '\n';
+            log << index /* * phase_detector_constants::interval_len */ << "," << p << '\n';
         }
     }
     log.close();
