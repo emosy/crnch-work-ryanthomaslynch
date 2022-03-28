@@ -6,7 +6,7 @@ Here's the steps I used to install scarphase:
 3. install protobuf - see below
 4. install boost - see below
 5. install python 3 - try "sudo apt install python3-pip"
-6. install python packages - try "pip install scipy scikit-learn matplotlib prettytable progressbar numpy"
+6. install python packages - try "pip install scipy scikit-learn matplotlib prettytable progressbar numpy proto-plus"
 7. now, you can cd into scarphase and run "cmake ." then "make"
 make might throw some warnings, but it should still compile and say [100%] at the end
 
@@ -19,6 +19,7 @@ how to install protobuf
 5. then run "./configure" then "make -j$(nproc)" then "make check" then "sudo make install" and "sudo ldconfig"
 6. restart bash by running "bash"
 7. test by trying to run "protoc" - should print out some help info
+8. you may need to install proto-plus from pip with "pip install proto-plus" so that python can use it. idk why though
 
 instructions on protobuf from https://github.com/protocolbuffers/protobuf/blob/master/src/README.md
 

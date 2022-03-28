@@ -6,3 +6,9 @@ xsbench -g 10 -p 500
 
 amg 50x3
 ~/drroot/bin64/drrun -c ~/drroot/samples/bin64/libmemtrace_x86_binary.so -- mpirun -np 1 ./amg -n 50 50 50
+
+
+
+xsbench with new simplified/combined method (using ryan's new sample tool)
+ ~/dynamorio/build/bin64/drrun -c ~/dynamorio/build/api/bin/libinstrace_ryan_simple.so -- ~/XSBench-19/ope
+nmp-threading/XSBench -g 10 -p 500
