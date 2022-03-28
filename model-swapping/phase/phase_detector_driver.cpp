@@ -29,6 +29,7 @@
 #include <functional>
 
 using namespace std;
+using namespace phase_detector_constants;
 
 static PhaseDetector detector_all;
 static PhaseDetector detector_mem;
@@ -43,7 +44,7 @@ static ofstream dram_phase_trace("dram_phase_trace.csv");
 vector<dram_listener_function> ext_dram_listeners;
 
 
-void read_file(char const log_file[], bool is_binary /*= 1*/) {
+void read_file(char const log_file[], bool is_binary /*= 1*/, int max_num_intervals = 1000000) {
     
 
     int is_ryan_simple_format = 1;
@@ -59,9 +60,12 @@ void read_file(char const log_file[], bool is_binary /*= 1*/) {
         // auto detector_detect = std::bind(&PhaseDetector::detect, &detector, std::placeholders::_1);
         // auto detector_va_detect = std::bind(&PhaseDetector::detect, &detector_va, std::placeholders::_1);
 
+        int interval_index = 0;
+        int num_intervals = 0;
 
         while (in_stream.good()) {
             
+            //IDEA: read in an array of structs or multiple structs or something
             in_stream.read((char*)&current, sizeof(simple_ins_ref_t));
 
             // std::thread t1(detector_detect, current.instruction_pointer);
@@ -82,6 +86,14 @@ void read_file(char const log_file[], bool is_binary /*= 1*/) {
                 detector_mem.increment_instruction_count();
             }
             detector_all.detect((uint64_t)current.pc);
+            interval_index++;
+            if (interval_index % interval_len == 0) {
+                num_intervals++;
+                interval_index = 0;
+            }
+            if (num_intervals >= max_num_intervals) {
+                break;
+            }
         }
 
     } else if (is_binary) {
@@ -95,9 +107,10 @@ void read_file(char const log_file[], bool is_binary /*= 1*/) {
         // auto detector_detect = std::bind(&PhaseDetector::detect, &detector, std::placeholders::_1);
         // auto detector_va_detect = std::bind(&PhaseDetector::detect, &detector_va, std::placeholders::_1);
 
-
+        
         while (in_stream.good()) {
             
+            //IDEA: read in an array of structs or multiple structs or something
             in_stream.read((char*)&current, sizeof(binary_output_x86_memtrace_struct_t));
 
             // std::thread t1(detector_detect, current.instruction_pointer);
@@ -168,7 +181,7 @@ void read_file(char const log_file[], bool is_binary /*= 1*/) {
 int main(int argc, char const *argv[])
 {
     if (argc == 1 or (argc == 2 and (string(argv[1]) == "-h" or string(argv[1]) == "--help"))) {
-        cout << "Usage: ./phase [OPTION] [FILE WITH LIST OF INPUT FILES]...\n" <<
+        cout << "Usage: ./phase [max num intervals] [OPTION] [FILE WITH LIST OF INPUT FILES]...\n" <<
         "Options are -o [OUTPUT FILE NAME] which outputs the phase trace to the file named\n" <<
         "and -h or --help which displays this usage message." <<
         "The file passed in after options should be a plain text file with each line containing\n" <<
@@ -192,7 +205,7 @@ int main(int argc, char const *argv[])
     // detector_va.register_listeners(test_listener);
     if (argc > 1) {
         bool is_binary = true;
-        int arg_index = 1;
+        int arg_index = 2;
         // bool output_phase_trace = true;
         string phase_trace_output_name_all = "xsb_all_test.csv";
         string phase_trace_output_name_mem = "xsb_mem_test.csv";
@@ -211,6 +224,26 @@ int main(int argc, char const *argv[])
         //     arg_index++;
         // }
 
+        int max_num_intervals = 1;
+        std::string arg = argv[1];
+        try
+        {
+            std::size_t pos;
+            int x = std::stoi(arg, &pos);
+            if (pos < arg.size())
+            {
+                std::cerr << "Trailing characters after number: " << arg << '\n';
+            }
+            max_num_intervals = x;
+        }
+        catch (std::invalid_argument const &ex)
+        {
+            std::cerr << "Invalid number: " << arg << '\n';
+        }
+        catch (std::out_of_range const &ex)
+        {
+            std::cerr << "Number out of range: " << arg << '\n';
+        }
 
         std::string input_files = argv[arg_index];
         ifstream input_file_list_stream(input_files);
@@ -218,7 +251,7 @@ int main(int argc, char const *argv[])
         //loop through the list of log files and call read_file on each one
         while (std::getline(input_file_list_stream, line)) {
             const char* log_file = line.c_str();
-            read_file(log_file, is_binary);
+            read_file(log_file, is_binary, max_num_intervals);
         }
 
 
