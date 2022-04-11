@@ -6,3 +6,4 @@ model-swapping/phase/phase
 *.out
 *.log
 *.diff
+model-swapping/python-test/src
