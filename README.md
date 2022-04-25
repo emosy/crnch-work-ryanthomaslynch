@@ -34,6 +34,17 @@ and -h or --help which displays this usage message.
 The phase program driver code expects inputs from the output logs of libmemtrace from DynamoRio run on whatever program you want to test.
 The default format is binary format (there was support for text format, but that's a side issue).
 
+
+
+TODO:
+write instructions on how to build, make traces with dynamorio, and run phase
+delete all the random unnecessary files
+document output formats
+save example plots - do example plots for bzip, gcc, etc like from simpoint
+SPEC2017 simpoints are known
+
+
+
 Good luck!
 
 Pax,

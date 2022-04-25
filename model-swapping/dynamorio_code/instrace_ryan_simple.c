@@ -269,6 +269,7 @@ event_app_instruction(void *drcontext, void *tag, instrlist_t *bb, instr_t *inst
         return DR_EMIT_DEFAULT;
 
 
+    // TODO: insert clean call for one in every 10k instructions - similar to Vincent's client
     /* insert code to add an entry to the buffer */
     instrument_instr(drcontext, bb, instr);
 
