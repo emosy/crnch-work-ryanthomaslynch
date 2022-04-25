@@ -1,3 +1,6 @@
 [submodule "DRAMsim3"]
 	path = model-swapping/DRAMsim3
 	url = https://github.com/emosy/DRAMsim3.git
+[submodule "dr_client/dynamorio"]
+	path = dr_client/dynamorio
+	url = https://github.com/emosy/dynamorio.git
